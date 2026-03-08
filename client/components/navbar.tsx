@@ -30,8 +30,8 @@ function Navbar() {
                 </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-                <NavigationMenuLink href="/about-us">
-                    About Us
+                <NavigationMenuLink href="/support">
+                    Support
                 </NavigationMenuLink>
             </NavigationMenuItem>
         </NavigationMenuList>
