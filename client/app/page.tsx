@@ -4,9 +4,9 @@ export default function Home() {
   return (
     <>
       <div className="flex items-center justify-around min-h-screen bg-color1">
-        <div>
-          <div className="text-8xl font-poppins font-black">ELECTRON</div>
-          <div className="text-sm font-poppins font-extralight text-right">Plug into the future</div>
+        <div className="font-poppins text-white">
+          <div className="text-8xl font-black">ELECTRON</div>
+          <div className="text-sm font-extralight text-right">Plug into the future</div>
         </div>
         <div className="flex flex-col justify-around gap-1">
           <div>
