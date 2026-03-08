@@ -20,18 +20,18 @@ function Navbar() {
     <NavigationMenu className="fixed top-2 z-5 flex items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
         <NavigationMenuList className="relative flex gap-3">
             <NavigationMenuItem>
-                <NavigationMenuLink>
-                    <Link href="/">Home</Link>
+                <NavigationMenuLink href="/">
+                    Home
                 </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-                <NavigationMenuLink>
-                    <Link href="/collection/all">Collections</Link>
+                <NavigationMenuLink href="/collection/all" >
+                    Collections
                 </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-                <NavigationMenuLink>
-                    <Link href="/about-us">About Us</Link>
+                <NavigationMenuLink href="/about-us">
+                    About Us
                 </NavigationMenuLink>
             </NavigationMenuItem>
         </NavigationMenuList>
