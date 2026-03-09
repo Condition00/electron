@@ -11,33 +11,60 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
-type Product = {
-  productId: number;
-  productName: string;
+// product type is intentionally permissive so that various pages can pass different shapes
+// (legacy data uses `id`/`name`, newer code might use `productId`/`productName`).
+// We display whichever fields are available.
+
+export type Product = {
+  id?: number;
+  name?: string;
+  productId?: number;
+  productName?: string;
   price: number;
-  category: string;
+  image?: string;
+  category?: string;
+  description?: string;
 };
 
-export default function ProductCard({ p }: { p: Product }) {
-  // const discount = p.originalPrice ? Math.round((1 - p.price / p.originalPrice) * 100) : null;
+interface ProductCardProps {
+  p: Product;
+  onAddToCart?: (product: Product) => void;
+}
+
+export default function ProductCard({ p, onAddToCart }: ProductCardProps) {
+  const displayName = p.name || p.productName || 'Untitled';
+  const handleAdd = () => {
+    if (onAddToCart) {
+      onAddToCart(p);
+    }
+  };
+
   return (
-    <Card className="relative flex items-center mx-auto w-full max-w-xs pt-0">
-      {/* <div className="absolute inset-0 z-30 aspect-video bg-black/35"/> */}
+    <Card className="relative flex flex-col items-center mx-auto w-full max-w-xs pt-0">
+      {/* placeholder image if none is provided */}
       <img
-        src="https://avatar.vercel.sh/shadcn1"
-        alt="Event cover"
+        src={p.image || 'https://avatar.vercel.sh/shadcn1'}
+        alt={displayName}
         className="relative rounded-t-xl aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
       />
       <CardHeader className="justify-center w-full">
-        {p.productName}
+        {displayName}
       </CardHeader>
       <CardDescription>
-        {p.price} INR
+        ₹{p.price}
       </CardDescription>
       <CardFooter>
-        <CardAction>
-          <Button className="w-full">View Product</Button>
-        </CardAction>
+        {onAddToCart ? (
+          <CardAction>
+            <Button onClick={handleAdd} className="w-full">
+              Add to cart
+            </Button>
+          </CardAction>
+        ) : (
+          <CardAction>
+            <Button className="w-full">View Product</Button>
+          </CardAction>
+        )}
       </CardFooter>
     </Card>
   );
