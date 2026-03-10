@@ -1,7 +1,7 @@
 import ProductCard from "@/components/ProductCard";
 
 type Product = {
-    id: string,
+    _id: string,
     name: string;
     description: string;
     category: string;
@@ -49,7 +49,7 @@ export default async function page({
         </div>
         <div className="flex items-center justify-evenly gap-20 max-w=[100vw] flex-wrap px-4 py-10">
             {products.map(p => 
-                <ProductCard key={p.id} p={p}/>
+                <ProductCard key={p._id} p={p}/>
             )}
         </div>
         </div>

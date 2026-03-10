@@ -26,12 +26,12 @@ export default async function page() {
 
   return (
     <>
-    <div className='flex items-center justify-around min-h-screen bg-color2'>
+    <div className='flex items-center justify-around min-h-[90vh] bg-color2'>
       <div className='text-white text-2xl md:text-8xl font-poppins font-semibold'>
         All Collections
       </div>
     </div>
-    <div className='flex flex-wrap items-center justify-evenly pt-10 bg-color5 min-h-screen'>
+    <div className='flex flex-wrap items-center justify-evenly pt-[15vh] bg-color5 min-h-screen'>
       {collections.map(c => 
         <CollectionCard key={c._id} c={c}></CollectionCard>
       )}

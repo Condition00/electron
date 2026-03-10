@@ -1,0 +1,9 @@
+{
+    "name": "Electron",
+    "version": "1.0.0",
+
+    "scripts": {
+        "dev-frontend": "cd client && npm run dev",
+        "dev-backend": "cd server && npm run start"
+    }
+}
