@@ -20,7 +20,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Routes
 app.get('/', (_req: Request, res: Response) => {
-  res.json({ 
+  res.json({
     message: 'ElectroHub API',
     endpoints: {
       collections: '/api/collections',
@@ -35,7 +35,7 @@ app.use('/api/collections', collectionsRouter);
 app.use('/api/products', productsRouter);
 
 // Connect to MongoDB and start server
-mongoose.connect(mongoDBURL)
+mongoose.connect(process.env.MONGODB_URI as string)
   .then(() => {
     console.log("✓ MongoDB database connection established successfully");
     app.listen(PORT, () => {
