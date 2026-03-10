@@ -7,7 +7,7 @@ import collectionsRouter from './routes/collections';
 import productsRouter from './routes/products';
 
 const app = express();
-const mongoDBURL = '';
+const mongoDBURL = process.env.FULL_MONGOURI;
 const PORT = process.env.PORT || 5000;
 
 // Middleware
@@ -35,7 +35,7 @@ app.use('/api/collections', collectionsRouter);
 app.use('/api/products', productsRouter);
 
 // Connect to MongoDB and start server
-mongoose.connect(mongoDBURL)
+mongoose.connect(mongoDBURL || "")
   .then(() => {
     console.log("✓ MongoDB database connection established successfully");
     app.listen(PORT, () => {
