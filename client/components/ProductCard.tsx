@@ -16,12 +16,12 @@ import { Button } from "@/components/ui/button"
 // We display whichever fields are available.
 
 export type Product = {
-  _id?: string;
-  name: string;
-  price: number;
-  images: string[];
-  category: string;
-  description?: string;
+  _id?: string,
+  name: string,
+  description?: string,
+  category: string,
+  price: number,
+  images: string[],
 };
 
 interface ProductCardProps {

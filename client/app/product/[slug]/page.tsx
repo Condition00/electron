@@ -1,6 +1,17 @@
 import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Image from "next/image";
 
-async function getProduct(id: string) {
+type Product = {
+  _id: string;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  images: string[];
+};
+
+async function getProduct(id: string) : Promise<Product> {
     const res = await fetch(`http://localhost:5000/api/products/${id}`, {
         cache: "no-store"
     });
@@ -27,10 +38,19 @@ export default async function page({params,} : {
 
     return(
         <div className="flex min-h-screen bg-color3 pt-20 px-8">
-            <img
-            src={p.images[0]}
-            className="max-h-96"
-            />
+            <Carousel className="w-full max-w-[16rem] sm:max-w-md">
+                <CarouselContent className="flex aspect-square items-center justify-center p-6">
+                    {p.images.map((im, i) => 
+                        <CarouselItem key={i}>
+                            <img
+                            src={im}
+                            />
+                        </CarouselItem>
+                    )}
+                </CarouselContent>
+                <CarouselPrevious/>
+                <CarouselNext/>
+            </Carousel>
             <div className="flex flex-col item-start font-poppins text-white p-8">
                 <h2 className="font-black text-4xl">{p.name}</h2>
                 <p className="font-light text-md text-zinc-100 py-6">{p.description}</p>
