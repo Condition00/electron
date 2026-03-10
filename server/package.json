@@ -6,6 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build && node dist/index.js",
     "build": "tsc",
+    "seed": "ts-node src/seed/populate.ts",
     "dev": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
   "dependencies": {
     "@types/cors": "^2.8.19",
     "@types/multer": "^2.1.0",
+    "axios": "^1.13.6",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",

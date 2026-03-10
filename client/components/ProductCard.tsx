@@ -16,13 +16,11 @@ import { Button } from "@/components/ui/button"
 // We display whichever fields are available.
 
 export type Product = {
-  id?: number;
-  name?: string;
-  productId?: number;
-  productName?: string;
+  _id?: string;
+  name: string;
   price: number;
-  image?: string;
-  category?: string;
+  images: string[];
+  category: string;
   description?: string;
 };
 
@@ -32,7 +30,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ p, onAddToCart }: ProductCardProps) {
-  const displayName = p.name || p.productName || 'Untitled';
+  const displayName = p.name || 'Untitled';
   const handleAdd = () => {
     if (onAddToCart) {
       onAddToCart(p);
@@ -43,9 +41,9 @@ export default function ProductCard({ p, onAddToCart }: ProductCardProps) {
     <Card className="relative flex flex-col items-center mx-auto w-full max-w-xs pt-0">
       {/* placeholder image if none is provided */}
       <img
-        src={p.image || 'https://avatar.vercel.sh/shadcn1'}
+        src={p.images[0] || ""}
         alt={displayName}
-        className="relative rounded-t-xl aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
+        className="relative rounded-t-xl aspect-video w-full object-cover brightness-90"
       />
       <CardHeader className="justify-center w-full">
         {displayName}
@@ -62,7 +60,9 @@ export default function ProductCard({ p, onAddToCart }: ProductCardProps) {
           </CardAction>
         ) : (
           <CardAction>
-            <Button className="w-full">View Product</Button>
+            <Button className="w-full">
+              <Link href={`/product/${p._id}`}>View Product</Link>
+            </Button>
           </CardAction>
         )}
       </CardFooter>

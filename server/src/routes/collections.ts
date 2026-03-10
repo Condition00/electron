@@ -33,19 +33,19 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Create collection
 router.post('/', upload.single('image'), async (req: Request, res: Response) => {
   try {
-    if (!req.file) {
-      res.status(400).json({ message: 'Image is required' });
-      return;
-    }
+    // if (!req.file) {
+    //   res.status(400).json({ message: 'Image is required' });
+    //   return;
+    // }
 
-    // Process and crop image to square
-    const processedPath = await cropToSquare(req.file.path);
-    const imagePath = `/uploads/processed/${path.basename(processedPath)}`;
+    // // Process and crop image to square
+    // const processedPath = await cropToSquare(req.file.path);
+    // const imagePath = `/uploads/processed/${path.basename(processedPath)}`;
 
     const collection = new Collection({
       title: req.body.title,
       description: req.body.description,
-      image: imagePath
+      image: req.body.image
     });
 
     await collection.save();

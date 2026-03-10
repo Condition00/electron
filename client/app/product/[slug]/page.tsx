@@ -28,12 +28,12 @@ export default async function page({params,} : {
     return(
         <div className="flex min-h-screen bg-color3 pt-20 px-8">
             <img
-            src='/heroimage1.png'
+            src={p.images[0]}
             className="max-h-96"
             />
             <div className="flex flex-col item-start font-poppins text-white p-8">
-                <h2 className="font-black text-4xl">{p.productName}</h2>
-                <p className="font-light text-md text-zinc-100 py-6">{p.productDescription}</p>
+                <h2 className="font-black text-4xl">{p.name}</h2>
+                <p className="font-light text-md text-zinc-100 py-6">{p.description}</p>
                 <p className="text-md text-zinc-200 py-8">{p.price} INR</p>
                 <div className="flex flex-row gap-6 w-full pt-10">
                 <Button variant="outline" className="w-1/2 h-10 text-black hover:bg-color2 hover:text-white">Add to Card</Button>

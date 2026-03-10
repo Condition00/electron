@@ -7,7 +7,7 @@ import collectionsRouter from './routes/collections';
 import productsRouter from './routes/products';
 
 const app = express();
-const mongoDBURL = process.env.MONGODB_URI || 'mongodb://localhost:27017/electron-store';
+const mongoDBURL = '';
 const PORT = process.env.PORT || 5000;
 
 // Middleware

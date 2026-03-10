@@ -47,26 +47,26 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Create product with multiple images
 router.post('/', upload.array('images', 10), async (req: Request, res: Response) => {
   try {
-    if (!req.files || (req.files as Express.Multer.File[]).length === 0) {
-      res.status(400).json({ message: 'At least one image is required' });
-      return;
-    }
+    // if (!req.files || (req.files as Express.Multer.File[]).length === 0) {
+    //   res.status(400).json({ message: 'At least one image is required' });
+    //   return;
+    // }
 
-    // Process and crop all images to square
-    const files = req.files as Express.Multer.File[];
-    const imagePaths = await Promise.all(
-      files.map(async (file) => {
-        const processedPath = await cropToSquare(file.path);
-        return `/uploads/processed/${path.basename(processedPath)}`;
-      })
-    );
+    // // Process and crop all images to square
+    // const files = req.files as Express.Multer.File[];
+    // const imagePaths = await Promise.all(
+    //   files.map(async (file) => {
+    //     const processedPath = await cropToSquare(file.path);
+    //     return `/uploads/processed/${path.basename(processedPath)}`;
+    //   })
+    // );
 
     const product = new Product({
       name: req.body.name,
       description: req.body.description,
       category: req.body.category,
       price: parseFloat(req.body.price),
-      images: imagePaths
+      images: req.body.images
     });
 
     await product.save();
