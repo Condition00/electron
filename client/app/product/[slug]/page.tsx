@@ -1,15 +1,30 @@
 import { Button } from "@/components/ui/button";
 
+async function getProduct(id: string) {
+    const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+        cache: "no-store"
+    });
+
+    if(!res.ok) {
+        throw new Error("Failed to fetch product");
+    }
+
+    return res.json();
+}
+
 export default async function page({params,} : {
     params : Promise<{slug : string}>
 }) {
-    const slug = await params
-    const p = {
-        productId: 123,
-        productName: 'Samsung Galaxy Book',
-        productDescription: 'blah blah blah blah blah....',
-        price: 129000,
-    }
+    const slug = (await params).slug;
+    const p = await getProduct(slug);
+    
+    // {
+    //     productId: 123,
+    //     productName: 'Samsung Galaxy Book',
+    //     productDescription: 'blah blah blah blah blah....',
+    //     price: 129000,
+    // }
+
     return(
         <div className="flex min-h-screen bg-color3 pt-20 px-8">
             <img
