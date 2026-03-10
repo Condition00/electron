@@ -20,7 +20,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Routes
 app.get('/', (_req: Request, res: Response) => {
-  res.json({ 
+  res.json({
     message: 'ElectroHub API',
     endpoints: {
       collections: '/api/collections',
