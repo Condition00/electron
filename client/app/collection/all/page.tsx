@@ -9,7 +9,7 @@ type Collection = {
 }
 
 async function getCollections(): Promise<Collection[]> {
-  const res = await fetch("http://localhost:5000/api/collections", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/collections`, {
     cache: "no-store"
   });
 
