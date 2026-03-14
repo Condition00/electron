@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 
-type Collection = {
+export type Collection = {
     _id: string,
     title: string,
     description: string,
@@ -33,6 +33,22 @@ export default function CollectionCard({c} : {
                     <Link href={`/collection/${c.title}`}>View {c.title}</Link>
                 </Button>
             
+            </CardFooter>
+        </Card>
+    );
+}
+
+export function HeroCollectionCard({c} : {
+    c: Collection
+}) {
+    return(
+        <Card className='p-2'>
+            <CardTitle>{c.title}</CardTitle>
+            <CardFooter>
+                <img
+                src={c.image}
+                className='w-32'
+                />
             </CardFooter>
         </Card>
     );

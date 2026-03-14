@@ -1,6 +1,20 @@
 import Image from "next/image";
+import { HeroCollectionCard, Collection } from "@/components/CollectionCard";
 
-export default function Home() {
+async function getCollections(): Promise<Collection[]> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/collections`, {
+    cache: "no-store"
+  });
+
+  if(!res.ok) {
+    throw new Error("Failed to fetch all collections!")
+  }
+
+  return res.json()
+}
+
+export default async function Home() {
+  const collections = await getCollections();
   return (
     <>
       <div className="flex items-center justify-around min-h-screen bg-color1">
@@ -51,6 +65,9 @@ export default function Home() {
       <div className="flex items-center justify-around min-h-screen bg-color5">
         {/* We will use component: HeroPageCategoryCard to render all our categories 
         I am adding dummy cards here rn*/}
+        {collections.map(c => 
+          <HeroCollectionCard key={c._id} c={c}></HeroCollectionCard>
+        )}
       </div>
       {/* # Footer
       note from Vishesh: soon to be converted to a component: Footer */}
