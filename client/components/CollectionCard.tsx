@@ -21,7 +21,7 @@ export default function CollectionCard({c} : {
     c: Collection
 }) {
     return(
-        <Card className='relative md:h-180 md:w-160 font-poppins p-4 md:p-6 mb-14 overflow-hidden'>
+        <Card className='relative h-100 w-9/10 md:h-180 md:w-160 font-poppins p-4 md:p-6 mb-14 overflow-hidden'>
             <CardTitle className='font-bold text-xl md:text-3xl'>{c.title}</CardTitle>
             <CardDescription className='mb-4 text-md md:text-base md:mb-8'>{c.description}</CardDescription>
             <div className='absolute bottom-0 right-0 w-2/3 h-3/5 overflow-hidden'>
@@ -42,7 +42,7 @@ export function HeroCollectionCard({c} : {
     c: Collection
 }) {
     return(
-        <div className='relative flex flex-col justify-start bg-white md:h-108 md:w-96 p-6 rounded-2xl overflow-hidden'>
+        <div className='relative flex flex-col justify-start bg-white h-84 w-78 wmd:h-108 md:w-96 p-6 rounded-2xl overflow-hidden'>
             <div className='text-2xl font-poppins font-semibold'>{c.title}</div>
             <div className='absolute bottom-0 right-0 w-2/3 h-3/5 overflow-hidden'>
             <img 
