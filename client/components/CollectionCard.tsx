@@ -43,8 +43,8 @@ export function HeroCollectionCard({c} : {
 }) {
     return(
         <div className='relative flex flex-col justify-start bg-white md:h-108 md:w-96 p-6 rounded-2xl overflow-hidden'>
-            <div className='text-lg font-poppins font-bold'>{c.title}</div>
-            <div className='absolute bottom-0 right-0 w-2/3 h-1/2 overflow-hidden'>
+            <div className='text-2xl font-poppins font-semibold'>{c.title}</div>
+            <div className='absolute bottom-0 right-0 w-2/3 h-3/5 overflow-hidden'>
             <img 
             src={c.image}
             className='w-[120%] h-[120%] object-cover object-left-top'

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { HeroCollectionCard, Collection } from "@/components/CollectionCard";
+import { Carousel, CarouselContent, CarouselNext, CarouselPrevious, CarouselItem } from "@/components/ui/carousel";
 
 async function getCollections(): Promise<Collection[]> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/collections`, {
@@ -62,12 +63,23 @@ export default async function Home() {
         </div>
       </div>
       {/* # Shop All Categories */}
-      <div className="flex items-center justify-around min-h-screen bg-color5">
-        {/* We will use component: HeroPageCategoryCard to render all our categories 
-        I am adding dummy cards here rn*/}
-        {collections.map(c => 
-          <HeroCollectionCard key={c._id} c={c}></HeroCollectionCard>
-        )}
+      <div className="flex flex-col items-center justify-evenly min-h-screen bg-color5">
+        <h2 className="font-inter font-bold text-4xl">Shop All Categories</h2>
+
+        <Carousel 
+          opts={{
+          align: "center",
+          loop: true,
+          }}
+          className="w-full flex items-center justify-evenly">
+          <CarouselContent className="">
+            {collections.map(c => (
+              <CarouselItem key={c._id} className="basis-1/3 pl-10">
+                <HeroCollectionCard key={c._id} c={c}></HeroCollectionCard>
+              </CarouselItem>
+            ))}
+        </CarouselContent>
+        </Carousel>
       </div>
       {/* # Footer
       note from Vishesh: soon to be converted to a component: Footer */}
