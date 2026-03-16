@@ -20,6 +20,7 @@ export default function AccountPage() {
     const token = getAuthToken()
 
     if (!token) {
+      router.replace('/login')
       setLoading(false)
       return
     }
@@ -38,6 +39,7 @@ export default function AccountPage() {
             await logout()
             setProfile(null)
             setLoading(false)
+            router.replace('/login')
             return
           }
           throw new Error('Failed to load account profile')
