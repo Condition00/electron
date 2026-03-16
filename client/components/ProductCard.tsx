@@ -7,20 +7,20 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 // product type is intentionally permissive so that various pages can pass different shapes
 // (legacy data uses `id`/`name`, newer code might use `productId`/`productName`).
 // We display whichever fields are available.
 
 export type Product = {
-  _id?: string,
-  name: string,
-  description?: string,
-  category: string,
-  price: number,
-  images: string[],
+  _id?: string;
+  name: string;
+  description?: string;
+  category: string;
+  price: number;
+  images: string[];
 };
 
 interface ProductCardProps {
@@ -29,7 +29,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ p, onAddToCart }: ProductCardProps) {
-  const displayName = p.name || 'Untitled';
+  const displayName = p.name || "Untitled";
   const handleAdd = () => {
     if (onAddToCart) {
       onAddToCart(p);
@@ -44,12 +44,8 @@ export default function ProductCard({ p, onAddToCart }: ProductCardProps) {
         alt={displayName}
         className="relative rounded-t-xl aspect-video w-full object-cover brightness-90"
       />
-      <CardHeader className="justify-center w-full">
-        {displayName}
-      </CardHeader>
-      <CardDescription>
-        ₹{p.price}
-      </CardDescription>
+      <CardHeader className="justify-center w-full">{displayName}</CardHeader>
+      <CardDescription>₹{p.price}</CardDescription>
       <CardFooter>
         {onAddToCart ? (
           <CardAction>

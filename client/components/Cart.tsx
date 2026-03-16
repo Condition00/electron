@@ -45,7 +45,7 @@ export default function Cart({
                 )}
                 <div>
                   <p className="font-semibold">
-                    {item.name || 'Unnamed product'}
+                    {item.name || "Unnamed product"}
                   </p>
                   <p className="text-sm text-slate-600">
                     ₹{item.price.toFixed(2)} each
@@ -77,9 +77,7 @@ export default function Cart({
               </div>
             </div>
           ))}
-          <div className="text-right font-bold">
-            Total: ₹{total.toFixed(2)}
-          </div>
+          <div className="text-right font-bold">Total: ₹{total.toFixed(2)}</div>
         </div>
       )}
       <button

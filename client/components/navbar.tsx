@@ -1,8 +1,7 @@
 "use client";
 
-
-import * as React from "react"
-import Link from "next/link"
+import * as React from "react";
+import Link from "next/link";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,49 +10,43 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-import { CircleUser, ShoppingCart } from 'lucide-react'
-
+} from "@/components/ui/navigation-menu";
+import { CircleUser, ShoppingCart } from "lucide-react";
 
 function Navbar() {
   return (
     <div className="relative flex min-w-screen items-center justify-center text-black">
-    <NavigationMenu className="fixed top-2 z-5 flex items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
+      <NavigationMenu className="fixed top-2 z-5 flex items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
         <NavigationMenuList className="relative flex gap-3">
-            <NavigationMenuItem>
-                <NavigationMenuLink href="/">
-                    Home
-                </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-                <NavigationMenuLink href="/collection/all" >
-                    Collections
-                </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-                <NavigationMenuLink href="/support">
-                    Support
-                </NavigationMenuLink>
-            </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/">Home</NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/collection/all">
+              Collections
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/support">Support</NavigationMenuLink>
+          </NavigationMenuItem>
         </NavigationMenuList>
-    </NavigationMenu>
-    <NavigationMenu className="absolute right-10 top-2 z-5 flex items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
+      </NavigationMenu>
+      <NavigationMenu className="absolute right-10 top-2 z-5 flex items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
         <NavigationMenuList className="relative flex gap-3">
-            <NavigationMenuItem>
-                <NavigationMenuLink href="/account">
-                    <CircleUser/>
-                </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-                <NavigationMenuLink href="/cart" >
-                    <ShoppingCart/>
-                </NavigationMenuLink>
-            </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/account">
+              <CircleUser />
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="/cart">
+              <ShoppingCart />
+            </NavigationMenuLink>
+          </NavigationMenuItem>
         </NavigationMenuList>
-    </NavigationMenu>
+      </NavigationMenu>
     </div>
   );
-};
+}
 
 export default Navbar;
-
