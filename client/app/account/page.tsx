@@ -59,7 +59,7 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-color5">
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         {/* Header */}
         <div className="mb-8">
@@ -72,22 +72,20 @@ export default function AccountPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Sidebar */}
           <div className="md:col-span-1">
-            <Card className="border border-[#e5e7eb]">
+            <Card className="border border-black">
               <CardContent className="p-4 space-y-2">
-                <button className="w-full text-left px-4 py-3 rounded-lg bg-[#f3f4f6] text-[#06141b] font-medium hover:bg-[#e5e7eb] transition flex items-center justify-between">
+                <button className="w-full text-left px-4 py-3 rounded-lg bg-[#f3f4f6] text-black font-medium hover:bg-[#e5e7eb] transition flex items-center justify-between">
                   Profile
-                  <ChevronRight className="w-4 h-4" />
                 </button>
                 <a href="#Orders">
-                <button className="w-full text-left px-4 py-3 rounded-lg text-[#06141b] hover:bg-[#f3f4f6] transition flex items-center justify-between">
+                <button className="w-full text-left px-4 py-3 rounded-lg text-black hover:bg-[#f3f4f6] transition flex items-center justify-between">
                   Orders
-                  <ChevronRight className="w-4 h-4" />
                 </button>
                 </a>
-                <button className="w-full text-left px-4 py-3 rounded-lg text-[#06141b] hover:bg-[#f3f4f6] transition flex items-center justify-between">
+                <button className="w-full text-left px-4 py-3 rounded-lg text-black hover:bg-[#f3f4f6] transition flex items-center justify-between">
                   <Settings className="w-4 h-4 mr-2 inline" />
                   Settings
-                  <ChevronRight className="w-4 h-4" />
+                  <div></div>
                 </button>
                 <button className="w-full text-left px-4 py-3 rounded-lg text-destructive hover:bg-red-50 transition flex items-center justify-between mt-4 border-t border-[#e5e7eb] pt-4">
                   <span onClick={handleLogout} className="inline-flex w-full items-center justify-between cursor-pointer">

@@ -15,7 +15,7 @@ import { CircleUser, ShoppingCart } from "lucide-react";
 
 function Navbar() {
   return (
-    <div className="sticky flex min-w-screen items-center justify-center text-black">
+    <div className="sticky flex min-w-screen items-center justify-center z-100 text-black">
       <NavigationMenu className="fixed top-2 z-5 flex items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
         <NavigationMenuList className="relative flex gap-3">
           <NavigationMenuItem>

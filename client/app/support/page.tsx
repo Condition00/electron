@@ -2,12 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import {
+  Card,
+  CardTitle,
+  CardDescription
+} from "@/components/ui/card"
 
 const FAQS = [
   { v: "item-1", q: "How do I track my order?",          a: "Once your order ships, you'll receive an email with a tracking link. You can also go to Account → Orders to track in real-time." },
@@ -21,7 +27,6 @@ const FAQS = [
 ];
 
 export default function SupportPage() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
   const channels = [{ icon: "📞", title: "Call Us", detail: "+91 80001 23456", sub: "Mon–Sat, 9am–7pm IST", href: "tel:+918000123456", cta: "Call Now" }, { icon: "✉️", title: "Email Us", detail: "support@electron.in", sub: "Reply within 2 hours", href: "mailto:support@electron.in", cta: "Send Email" }, { icon: "💬", title: "Live Chat", detail: "Chat with an agent", sub: "Available 9am–9pm", href: "#contact", cta: "Start Chat" }, { icon: "📦", title: "Track Order", detail: "Real-time tracking", sub: "Enter your order ID", href: "/account", cta: "Track Now" }]
@@ -29,29 +34,28 @@ export default function SupportPage() {
   return (
     <div className="">
       {/* Hero */}
-      <div className="flex items-center justify-around min-h-screen bg-color2">
+      <div className="flex items-center justify-around min-h-[90vh] bg-color2">
         <div className="flex flex-col items-center justify-around gap-5 max-w-4/5 text-center font-poppins text-white">
           <h1 className="text-4xl font-black md:text-8xl">How can we help you?</h1>
           <p className="text-md md:text-xl font-light">Our support team is available Mon–Sat, 9am–7pm IST. Average response time: 2 hours.</p>
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-around gap-20 min-h-screen">
+      <div className="flex flex-col items-center justify-around gap-20 min-h-screen bg-color5 pt-[15vh] font-inter">
         {/* Channels */}
         <div className="flex items-center justify-evenly min-w-[99vw] mt-4">
           {channels.map(ch => (
-            <div key={ch.title} className="flex flex-col items-center justify-around gap-2 px-8 py-6 bg-zinc-100 border-2 border-color1 rounded-lg font-opensans">
-              <span className="text-4xl">{ch.icon}</span>
-              <h3 className="text-2xl font-bold pt-4">{ch.title}</h3>
+            <Card key={ch.title} className="flex flex-col items-center justify-around gap-2 p-8 bg-white   border-2 border-color1 rounded-lg">
+              <CardTitle className="text-2xl font-bold pt-4">{ch.title}</CardTitle>
               <p className="text-sm">{ch.detail}</p>
               <p className="text-sm font-light pb-4">{ch.sub}</p>
               <a href={ch.href} className="bg-color3 text-white font-opensans text-md py-1 px-6  border-0 rounded-xl">{ch.cta}</a>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* FAQ */}
-        <section className="flex flex-col min-w-lg max-w-lg border-2 border-black rounded-xl p-4">
+        <section className="flex flex-col min-w-lg max-w-lg border-2 border-black rounded-xl p-4 bg-white">
           <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.3rem", marginBottom: "1.25rem" }}>Frequently Asked Questions</h2>
           <Accordion type="single"
             collapsible
@@ -67,7 +71,7 @@ export default function SupportPage() {
         </section>
 
         {/* Contact form */}
-        <section id="contact" className="border-2 border-black p-4 rounded-xl">
+        <section id="contact" className="border-2 border-black p-4 rounded-xl bg-white">
           <h2 className="text-2xl font-poppins font-bold">Send us a message</h2>
           <div className="card p-8">
             {sent ? (
@@ -98,25 +102,24 @@ export default function SupportPage() {
                   <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)", marginBottom: "0.4rem", textTransform: "uppercase", letterSpacing: "0.04em" }}>Message *</label>
                   <textarea required rows={5} style={{ width: "100%", padding: "0.65rem 0.9rem", border: "1.5px solid var(--border)", borderRadius: 8, fontSize: "0.9rem", color: "var(--text)", background: "var(--bg-muted)", outline: "none", resize: "vertical", fontFamily: "var(--font)" }} placeholder="Describe your issue in detail..." value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
                 </div>
-                <button className="btn-primary" style={{ marginTop: "1.25rem", padding: "0.85rem 2rem" }} onClick={() => { if (form.name && form.email && form.subject && form.message) setSent(true); }}>Send Message →</button>
+                <Button>Send Message</Button>
               </div>
             )}
           </div>
         </section>
 
         {/* Returns info */}
-        <section style={{ marginTop: "3rem" }}>
+        <div className="flex flex-col items-center justify-around max-w-lg bg-white border-2 border-black rounded-lg mb-10 p-4">
           <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.3rem", marginBottom: "1.25rem" }}>Returns & Warranty</h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: "1.25rem" }}>
             {[{ icon: "↩️", title: "7-Day Returns", body: "Return any product within 7 days of delivery. Must be unused, in original packaging with all accessories." }, { icon: "🔧", title: "Warranty Claims", body: "All products come with manufacturer warranty. Log your claim through Account → Orders → Warranty." }, { icon: "💰", title: "Refund Timeline", body: "Refunds processed in 3–5 working days after we receive and inspect the returned item." }, { icon: "🔄", title: "Exchanges", body: "Exchange requests can be made within 7 days. Subject to stock availability." }].map(info => (
-              <div key={info.title} className="card" style={{ padding: "1.5rem" }}>
-                <span style={{ fontSize: "1.8rem" }}>{info.icon}</span>
-                <h4 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, margin: "0.6rem 0 0.3rem" }}>{info.title}</h4>
-                <p style={{ color: "var(--text-muted)", fontSize: "0.87rem", lineHeight: 1.65 }}>{info.body}</p>
-              </div>
+              <Card key={info.title} className="card" style={{ padding: "1.5rem" }}>
+                <CardTitle style={{ fontFamily: "var(--font-heading)", fontWeight: 800, margin: "0.6rem 0 0.3rem" }}>{info.title}</CardTitle>
+                <CardDescription style={{ color: "var(--text-muted)", fontSize: "0.87rem", lineHeight: 1.65 }}>{info.body}</CardDescription>
+              </Card>
             ))}
           </div>
-        </section>
+        </div>
       </div>
     </div>
   );
