@@ -1,4 +1,5 @@
 import ProductCard from "@/components/ProductCard";
+import { API_BASE_URL } from "@/lib/api";
 
 type Product = {
     _id: string,
@@ -10,7 +11,7 @@ type Product = {
 }
 
 async function getProductByCategory(c : string): Promise<Product[]> {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/category/${c}`, {
+    const res = await fetch(`${API_BASE_URL}/api/products/category/${encodeURIComponent(c)}`, {
         cache: "no-store"
     });
 
@@ -27,7 +28,8 @@ export default async function page({
     params: Promise<{slug : string}>
 }) {
     const { slug } = (await params);
-    const products = await getProductByCategory(slug);
+    const categoryName = decodeURIComponent(slug);
+    const products = await getProductByCategory(categoryName);
     
     // [{
     //     productId: 123,
@@ -45,7 +47,7 @@ export default async function page({
     return(
         <div>
         <div className="flex items-center justify-around min-h-[40vh] font-opensans font-black text-8xl text-white bg-black">
-            {slug.toUpperCase()}
+            {categoryName.toUpperCase()}
         </div>
         <div className="flex items-center justify-evenly gap-20 max-w=[100vw] flex-wrap px-4 py-10">
             {products.map(p => 

@@ -10,7 +10,7 @@ export type Collection = {
 
 export default function CollectionCard({ c }: { c: Collection }) {
   return (
-    <Link href={`/collection/${c.title}`}>
+    <Link href={`/collection/${encodeURIComponent(c.title)}`}>
       <Card className="relative h-100 w-9/10 md:h-180 md:w-160 font-poppins p-4 md:p-6 mb-14 overflow-hidden">
         <CardTitle className="font-bold text-xl md:text-3xl">
           {c.title}
@@ -21,6 +21,7 @@ export default function CollectionCard({ c }: { c: Collection }) {
         <div className="absolute bottom-0 right-0 w-2/3 h-3/5 overflow-hidden">
           <img
             src={c.image}
+            alt={c.title}
             className="w-[140%] h-[140%] object-cover object-top-left"
           />
           {/* <Button className='mt-8'>
@@ -39,6 +40,7 @@ export function HeroCollectionCard({ c }: { c: Collection }) {
       <div className="absolute bottom-0 right-0 w-2/3 h-3/5 overflow-hidden">
         <img
           src={c.image}
+          alt={c.title}
           className="w-[120%] h-[120%] object-cover object-top-left"
         />
       </div>

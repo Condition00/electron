@@ -1,5 +1,6 @@
 import CollectionCard from '@/components/CollectionCard';
 import React from 'react'
+import { API_BASE_URL } from '@/lib/api';
 
 type Collection = {
     _id: string,
@@ -9,7 +10,7 @@ type Collection = {
 }
 
 async function getCollections(): Promise<Collection[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/collections`, {
+  const res = await fetch(`${API_BASE_URL}/api/collections`, {
     cache: "no-store"
   });
 

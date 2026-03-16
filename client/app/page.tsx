@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { HeroCollectionCard, Collection } from "@/components/CollectionCard";
+import { API_BASE_URL } from "@/lib/api";
 import {
   Carousel,
   CarouselContent,
@@ -10,7 +11,7 @@ import {
 
 async function getCollections(): Promise<Collection[]> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/collections`,
+    `${API_BASE_URL}/api/collections`,
     {
       cache: "no-store",
     },

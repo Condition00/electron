@@ -1,20 +1,63 @@
 'use client'
 
-import Navbar from '@/components/navbar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChevronRight, LogOut, Settings } from 'lucide-react'
 import Link from 'next/link'
-
-type Profile = {
-  _id: string,
-  fullName: string,
-  phoneNumber: string,
-  email: string,
-  address: string[],
-}
+import { useEffect, useMemo, useState } from 'react'
+import { API_BASE_URL, type ApiUserProfile } from '@/lib/api'
 
 export default function AccountPage() {
+  const [profile, setProfile] = useState<ApiUserProfile | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const email = window.localStorage.getItem('electron_user_email')
+
+    if (!email) {
+      setLoading(false)
+      return
+    }
+
+    const loadProfile = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        const res = await fetch(`${API_BASE_URL}/api/auth/profile?email=${encodeURIComponent(email)}`, {
+          cache: 'no-store',
+        })
+
+        if (!res.ok) {
+          throw new Error('Failed to load account profile')
+        }
+
+        const data = await res.json()
+        setProfile(data as ApiUserProfile)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unexpected error')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadProfile()
+  }, [])
+
+  const joinedDate = useMemo(() => {
+    if (!profile?.createdAt) {
+      return '—'
+    }
+
+    return new Date(profile.createdAt).toLocaleDateString()
+  }, [profile])
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('electron_user_email')
+    window.location.href = '/login'
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
@@ -45,9 +88,13 @@ export default function AccountPage() {
                   <ChevronRight className="w-4 h-4" />
                 </button>
                 <button className="w-full text-left px-4 py-3 rounded-lg text-destructive hover:bg-red-50 transition flex items-center justify-between mt-4 border-t border-[#e5e7eb] pt-4">
-                  <LogOut className="w-4 h-4 mr-2 inline" />
-                  Log Out
-                  <ChevronRight className="w-4 h-4" />
+                  <span onClick={handleLogout} className="inline-flex w-full items-center justify-between cursor-pointer">
+                    <span>
+                      <LogOut className="w-4 h-4 mr-2 inline" />
+                      Log Out
+                    </span>
+                    <ChevronRight className="w-4 h-4" />
+                  </span>
                 </button>
               </CardContent>
             </Card>
@@ -68,21 +115,32 @@ export default function AccountPage() {
                 </div>
               </CardHeader>
               <CardContent className="p-6 space-y-4">
+                {loading ? <p className="text-[#4a5c6a]">Loading profile...</p> : null}
+                {error ? <p className="text-red-600">{error}</p> : null}
+                {!loading && !profile ? (
+                  <div className="space-y-3">
+                    <p className="text-[#4a5c6a]">You are not logged in.</p>
+                    <Link href="/login">
+                      <Button variant="outline">Go to Login</Button>
+                    </Link>
+                  </div>
+                ) : null}
+
                 <div>
                   <p className="text-[#9ba8ab] text-sm mb-1">Full Name</p>
-                  <p className="text-[#06141b] font-medium">Sarah Johnson</p>
+                  <p className="text-[#06141b] font-medium">{profile?.fullName || '—'}</p>
                 </div>
                 <div>
                   <p className="text-[#9ba8ab] text-sm mb-1">Email Address</p>
-                  <p className="text-[#06141b] font-medium">sarah.johnson@example.com</p>
+                  <p className="text-[#06141b] font-medium">{profile?.email || '—'}</p>
                 </div>
                 <div>
                   <p className="text-[#9ba8ab] text-sm mb-1">Phone Number</p>
-                  <p className="text-[#06141b] font-medium">+1 (555) 123-4567</p>
+                  <p className="text-[#06141b] font-medium">{profile?.phoneNumber || '—'}</p>
                 </div>
                 <div>
                   <p className="text-[#9ba8ab] text-sm mb-1">Date Joined</p>
-                  <p className="text-[#06141b] font-medium">January 15, 2024</p>
+                  <p className="text-[#06141b] font-medium">{joinedDate}</p>
                 </div>
               </CardContent>
             </Card>

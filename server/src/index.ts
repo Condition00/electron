@@ -5,10 +5,31 @@ import cors from 'cors';
 import path from 'path';
 import collectionsRouter from './routes/collections';
 import productsRouter from './routes/products';
+import authRouter from './routes/auth';
 
 const app = express();
-const mongoDBURL = process.env.FULL_MONGOURI;
+const rawMongoDbUri = process.env.MONGODB_URI ?? process.env.FULL_MONGOURI;
 const PORT = process.env.PORT || 5000;
+
+const normalizeMongoUri = (value?: string): string => {
+  if (!value) return '';
+
+  return value
+    .trim()
+    .replace(/^['"]+|['"]+$/g, '');
+};
+
+const mongoDBURL = normalizeMongoUri(rawMongoDbUri);
+
+if (!mongoDBURL) {
+  console.error("✗ Missing MongoDB connection string. Set MONGODB_URI in .env (or FULL_MONGOURI for legacy config)");
+  process.exit(1);
+}
+
+if (!mongoDBURL.startsWith('mongodb://') && !mongoDBURL.startsWith('mongodb+srv://')) {
+  console.error('✗ Invalid MongoDB URI format. It must start with "mongodb://" or "mongodb+srv://".');
+  process.exit(1);
+}
 
 // Middleware
 app.use(cors());
@@ -25,14 +46,20 @@ app.get('/', (_req: Request, res: Response) => {
     endpoints: {
       collections: '/api/collections',
       products: '/api/products',
+      productDeals: '/api/products/deals',
+      productCategories: '/api/products/categories',
       productsByCategory: '/api/products/category/:category',
-      productById: '/api/products/:id'
+      productById: '/api/products/:id',
+      signup: '/api/auth/signup',
+      login: '/api/auth/login',
+      profile: '/api/auth/profile?email=<email>',
     }
   });
 });
 
 app.use('/api/collections', collectionsRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/auth', authRouter);
 
 // Connect to MongoDB and start server
 mongoose.connect(mongoDBURL || "")

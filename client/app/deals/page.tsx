@@ -1,12 +1,34 @@
-import { PRODUCTS } from "@/lib/data";
+import { API_BASE_URL, type ApiProduct } from "@/lib/api";
 import { fmt } from "@/lib/format";
 import ProductCard from "@/components/ProductCard";
 
-const deals = PRODUCTS.filter(p => p.deal && p.emoji).sort((a, b) => (1 - b.price / b.originalPrice!) - (1 - a.price / a.originalPrice!)).map(p => ({ ...p, reviews: [] }));
-const maxDiscount = Math.round((1 - Math.min(...deals.map(p => p.price / p.originalPrice!))) * 100);
-const minSaving   = Math.min(...deals.map(p => p.originalPrice! - p.price));
+async function getDeals(): Promise<ApiProduct[]> {
+  const res = await fetch(`${API_BASE_URL}/api/products/deals`, {
+    cache: "no-store",
+  });
 
-export default function DealsPage() {
+  if (!res.ok) {
+    throw new Error("Failed to fetch deals");
+  }
+
+  return res.json();
+}
+
+export default async function DealsPage() {
+  const deals = await getDeals();
+  const validDeals = deals.filter((p) => p.originalPrice && p.originalPrice > p.price);
+
+  const maxDiscount = validDeals.length
+    ? Math.round(
+        (1 - Math.min(...validDeals.map((p) => p.price / (p.originalPrice as number)))) *
+          100,
+      )
+    : 0;
+
+  const minSaving = validDeals.length
+    ? Math.min(...validDeals.map((p) => (p.originalPrice as number) - p.price))
+    : 0;
+
   return (
     <div>
       <div style={{ background: "linear-gradient(135deg,#fff7ed 0%,#fef2f2 60%,#f8f9fc 100%)", padding: "3rem 0 2.5rem", borderBottom: "1px solid var(--border)" }}>
@@ -32,7 +54,7 @@ export default function DealsPage() {
       <div className="container" style={{ padding: "2.5rem 1.5rem 4rem" }}>
         <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.2rem", marginBottom: "1.5rem" }}>All Deals — Biggest Discount First</h2>
         <div className="products-grid">
-          {deals.map(p => <ProductCard key={p.id} p={p} />)}
+          {deals.map(p => <ProductCard key={p._id} p={p} />)}
         </div>
       </div>
     </div>

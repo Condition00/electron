@@ -9,21 +9,92 @@ const router = Router();
 // Get all products (with optional category filter)
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { category } = req.query;
-    const filter = category ? { category: category as string } : {};
-    
-    const products = await Product.find(filter).sort({ createdAt: -1 });
+    const {
+      category,
+      q,
+      sort = 'latest',
+      deals,
+    } = req.query;
+
+    const filter: Record<string, unknown> = {};
+
+    if (category && typeof category === 'string') {
+      filter.category = { $regex: `^${category}$`, $options: 'i' };
+    }
+
+    if (q && typeof q === 'string') {
+      filter.name = { $regex: q, $options: 'i' };
+    }
+
+    if (deals === 'true') {
+      filter.$or = [
+        { deal: true },
+        {
+          $expr: {
+            $gt: ['$originalPrice', '$price']
+          }
+        }
+      ];
+    }
+
+    const sortMap: Record<string, Record<string, 1 | -1>> = {
+      latest: { createdAt: -1 },
+      'price-low': { price: 1 },
+      'price-high': { price: -1 },
+      rating: { rating: -1, createdAt: -1 },
+    };
+
+    const mongoSort = sortMap[String(sort)] ?? sortMap.latest;
+
+    const products = await Product.find(filter).sort(mongoSort);
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching products', error });
   }
 });
 
+// Get all product categories (distinct)
+router.get('/categories', async (_req: Request, res: Response) => {
+  try {
+    const categories = await Product.distinct('category');
+    const normalized = categories
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b))
+      .map((name) => ({ name }));
+
+    res.json(normalized);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching categories', error });
+  }
+});
+
+// Get products currently on deal
+router.get('/deals', async (_req: Request, res: Response) => {
+  try {
+    const deals = await Product.find({
+      $or: [
+        { deal: true },
+        {
+          $expr: {
+            $gt: ['$originalPrice', '$price']
+          }
+        }
+      ]
+    }).sort({ createdAt: -1 });
+
+    res.json(deals);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching deals', error });
+  }
+});
+
 // Get products by category
 router.get('/category/:category', async (req: Request, res: Response) => {
   try {
-    const category: string = req.params.category as string;
-    const products = await Product.find({ category: category }).sort({ createdAt: -1 });
+    const category = decodeURIComponent(req.params.category as string).trim();
+    const products = await Product.find({
+      category: { $regex: `^${category}$`, $options: 'i' }
+    }).sort({ createdAt: -1 });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching products', error });
@@ -66,6 +137,10 @@ router.post('/', upload.array('images', 10), async (req: Request, res: Response)
       description: req.body.description,
       category: req.body.category,
       price: parseFloat(req.body.price),
+      originalPrice: req.body.originalPrice ? parseFloat(req.body.originalPrice) : undefined,
+      rating: req.body.rating ? parseFloat(req.body.rating) : undefined,
+      badge: req.body.badge,
+      deal: req.body.deal === 'true' || req.body.deal === true,
       images: req.body.images
     });
 
@@ -83,7 +158,11 @@ router.put('/:id', upload.array('images', 10), async (req: Request, res: Respons
       name: req.body.name,
       description: req.body.description,
       category: req.body.category,
-      price: parseFloat(req.body.price)
+      price: parseFloat(req.body.price),
+      originalPrice: req.body.originalPrice ? parseFloat(req.body.originalPrice) : undefined,
+      rating: req.body.rating ? parseFloat(req.body.rating) : undefined,
+      badge: req.body.badge,
+      deal: req.body.deal === 'true' || req.body.deal === true,
     };
 
     if (req.files && (req.files as Express.Multer.File[]).length > 0) {

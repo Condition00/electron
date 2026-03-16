@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Image from "next/image";
+import { API_BASE_URL } from "@/lib/api";
 
 type Product = {
   _id: string;
@@ -13,7 +14,7 @@ type Product = {
 
 async function getProduct(id: string) : Promise<Product> {
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/api/products/${id}`, {
         cache: "no-store"
     });
 

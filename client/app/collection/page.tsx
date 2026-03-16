@@ -1,25 +1,81 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { PRODUCTS, CATEGORIES } from "@/lib/data";
 import ProductCard from "@/components/ProductCard";
+import { API_BASE_URL, type ApiCategory, type ApiProduct } from "@/lib/api";
 
 function CategoriesContent() {
   const params  = useSearchParams();
   const [cat,    setCat]    = useState(params.get("cat") || "");
   const [search, setSearch] = useState(params.get("q")   || "");
   const [sort,   setSort]   = useState("popular");
+  const [products, setProducts] = useState<ApiProduct[]>([]);
+  const [categories, setCategories] = useState<ApiCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const [productsRes, categoriesRes] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/products`, { cache: "no-store" }),
+          fetch(`${API_BASE_URL}/api/products/categories`, { cache: "no-store" }),
+        ]);
+
+        if (!productsRes.ok || !categoriesRes.ok) {
+          throw new Error("Failed to load products and categories");
+        }
+
+        const [productsData, categoriesData] = await Promise.all([
+          productsRes.json(),
+          categoriesRes.json(),
+        ]);
+
+        if (mounted) {
+          setProducts(productsData as ApiProduct[]);
+          setCategories(categoriesData as ApiCategory[]);
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err.message : "Unexpected error");
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadData();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const filtered = useMemo(() => {
-    let list = PRODUCTS;
+    let list = products;
     if (cat)    list = list.filter(p => p.category === cat);
     if (search) list = list.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
     if (sort === "price-low")  return [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-high") return [...list].sort((a, b) => b.price - a.price);
-    if (sort === "rating")     return [...list].sort((a, b) => b.rating - a.rating);
+    if (sort === "rating")     return [...list].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
     return list;
-  }, [cat, search, sort]);
+  }, [products, cat, search, sort]);
+
+  if (loading) {
+    return <div style={{ padding: "4rem", textAlign: "center", color: "var(--text-muted)" }}>Loading products...</div>;
+  }
+
+  if (error) {
+    return <div style={{ padding: "4rem", textAlign: "center", color: "var(--red)" }}>Error: {error}</div>;
+  }
 
   return (
     <div className="container" style={{ padding: "2rem 1.5rem 4rem" }}>
@@ -36,9 +92,9 @@ function CategoriesContent() {
 
       <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1.75rem", alignItems: "center" }}>
         <button className={`chip ${cat === "" ? "active" : ""}`} onClick={() => setCat("")}>All</button>
-        {CATEGORIES.map(c => (
+        {categories.map(c => (
           <button key={c.name} className={`chip ${cat === c.name ? "active" : ""}`} onClick={() => setCat(cat === c.name ? "" : c.name)}>
-            {c.emoji} {c.name}
+            {c.name}
           </button>
         ))}
         <select style={{ marginLeft: "auto", background: "var(--bg-muted)", border: "1.5px solid var(--border)", borderRadius: 8, padding: "0.45rem 0.85rem", fontSize: "0.85rem", color: "var(--text)", cursor: "pointer", fontFamily: "var(--font)" }} value={sort} onChange={e => setSort(e.target.value)}>
@@ -58,7 +114,7 @@ function CategoriesContent() {
         </div>
       ) : (
         <div className="products-grid">
-          {filtered.map(p => <ProductCard key={p.id} p={p} />)}
+          {filtered.map(p => <ProductCard key={p._id} p={p} />)}
         </div>
       )}
     </div>
