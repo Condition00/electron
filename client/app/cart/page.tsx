@@ -55,8 +55,8 @@ export default function CartPage() {
   const total = subtotal + shipping + tax
 
   return (
-    <div className='flex min-h-screen bg-color3'>
-    <div className="min-h-screen bg-white rounded-2xl m-20 w-full ">
+    <div className='flex min-h-screen bg-color4'>
+    <div className="min-h-screen bg-color5 rounded-2xl m-20 w-full ">
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         {/* Header */}
@@ -210,7 +210,7 @@ export default function CartPage() {
                   )}
 
                   {/* Checkout Button */}
-                  <Button className="w-full bg-[#06141b] hover:bg-[#11212d] text-white h-12 text-base font-medium mt-4">
+                  <Button className="w-full bg-color2 hover:bg-color5 text-white transition-all ease-in-out duration-300 hover:text-black h-12 text-base font-medium mt-4">
                     Proceed to Checkout
                   </Button>
 
