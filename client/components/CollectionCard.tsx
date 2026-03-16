@@ -1,14 +1,10 @@
 import Link from 'next/link'
 import {
   Card,
-  CardAction,
-  CardContent,
   CardDescription,
-  CardFooter,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Button } from '@/components/ui/button'
+
 
 export type Collection = {
     _id: string,
@@ -21,6 +17,7 @@ export default function CollectionCard({c} : {
     c: Collection
 }) {
     return(
+        <Link href={`/collection/${c.title}`}>
         <Card className='relative h-100 w-9/10 md:h-180 md:w-160 font-poppins p-4 md:p-6 mb-14 overflow-hidden'>
             <CardTitle className='font-bold text-xl md:text-3xl'>{c.title}</CardTitle>
             <CardDescription className='mb-4 text-md md:text-base md:mb-8'>{c.description}</CardDescription>
@@ -35,6 +32,7 @@ export default function CollectionCard({c} : {
             
             </div>
         </Card>
+        </Link>
     );
 }
 
@@ -47,7 +45,7 @@ export function HeroCollectionCard({c} : {
             <div className='absolute bottom-0 right-0 w-2/3 h-3/5 overflow-hidden'>
             <img 
             src={c.image}
-            className='w-[120%] h-[120%] object-cover object-left-top'
+            className='w-[120%] h-[120%] object-cover object-top-left'
             />
             </div>
         </div>
