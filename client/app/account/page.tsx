@@ -5,17 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChevronRight, LogOut, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { API_BASE_URL, type ApiUserProfile } from '@/lib/api'
+import { authorizedFetch, getAuthToken, logout } from '@/lib/auth'
 
 export default function AccountPage() {
+  const router = useRouter()
   const [profile, setProfile] = useState<ApiUserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const email = window.localStorage.getItem('electron_user_email')
+    const token = getAuthToken()
 
-    if (!email) {
+    if (!token) {
       setLoading(false)
       return
     }
@@ -25,11 +28,17 @@ export default function AccountPage() {
         setLoading(true)
         setError(null)
 
-        const res = await fetch(`${API_BASE_URL}/api/auth/profile?email=${encodeURIComponent(email)}`, {
+        const res = await authorizedFetch(`${API_BASE_URL}/api/auth/profile`, {
           cache: 'no-store',
         })
 
         if (!res.ok) {
+          if (res.status === 401) {
+            await logout()
+            setProfile(null)
+            setLoading(false)
+            return
+          }
           throw new Error('Failed to load account profile')
         }
 
@@ -53,9 +62,10 @@ export default function AccountPage() {
     return new Date(profile.createdAt).toLocaleDateString()
   }, [profile])
 
-  const handleLogout = () => {
-    window.localStorage.removeItem('electron_user_email')
-    window.location.href = '/login'
+  const handleLogout = async () => {
+    await logout()
+    router.push('/login')
+    router.refresh()
   }
 
   return (
@@ -87,8 +97,8 @@ export default function AccountPage() {
                   Settings
                   <div></div>
                 </button>
-                <button className="w-full text-left px-4 py-3 rounded-lg text-destructive hover:bg-red-50 transition flex items-center justify-between mt-4 border-t border-[#e5e7eb] pt-4">
-                  <span onClick={handleLogout} className="inline-flex w-full items-center justify-between cursor-pointer">
+                <button onClick={handleLogout} className="w-full text-left px-4 py-3 rounded-lg text-destructive hover:bg-red-50 transition flex items-center justify-between mt-4 border-t border-[#e5e7eb] pt-4">
+                  <span className="inline-flex w-full items-center justify-between cursor-pointer">
                     <span>
                       <LogOut className="w-4 h-4 mr-2 inline" />
                       Log Out

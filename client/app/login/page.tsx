@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_BASE_URL } from "@/lib/api";
+import { setAuthToken } from "@/lib/auth";
 
 export default function Page() {
     const router = useRouter();
@@ -41,7 +42,11 @@ export default function Page() {
                 throw new Error(data?.message || "Login failed");
             }
 
-            window.localStorage.setItem("electron_user_email", data.user.email);
+            if (!data?.token) {
+                throw new Error("Authentication token was not returned");
+            }
+
+            setAuthToken(data.token);
             router.push("/account");
             router.refresh();
         } catch (err) {

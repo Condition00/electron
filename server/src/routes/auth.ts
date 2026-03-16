@@ -1,7 +1,21 @@
 import { Request, Response, Router } from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import User from '../models/User';
+import { AuthRequest, requireAuth } from '../middleware/auth';
 
 const router = Router();
+
+const getJwtSecret = (): string => {
+  return process.env.JWT_SECRET || 'dev-jwt-secret-change-me';
+};
+
+const signToken = (userId: string, email: string): string => {
+  return jwt.sign({ email }, getJwtSecret(), {
+    subject: userId,
+    expiresIn: '7d',
+  });
+};
 
 router.post('/signup', async (req: Request, res: Response) => {
   try {
@@ -18,17 +32,22 @@ router.post('/signup', async (req: Request, res: Response) => {
       return;
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = await User.create({
       fullName,
       email: String(email).toLowerCase(),
-      password,
+      password: hashedPassword,
       country,
       dateOfBirth,
       address: [],
     });
 
+    const token = signToken(String(user._id), user.email);
+
     res.status(201).json({
       message: 'Account created successfully',
+      token,
       user: {
         _id: user._id,
         fullName: user.fullName,
@@ -52,13 +71,22 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 
     const user = await User.findOne({ email: String(email).toLowerCase() });
-    if (!user || user.password !== password) {
+    if (!user) {
       res.status(401).json({ message: 'Invalid email or password' });
       return;
     }
 
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      res.status(401).json({ message: 'Invalid email or password' });
+      return;
+    }
+
+    const token = signToken(String(user._id), user.email);
+
     res.json({
       message: 'Login successful',
+      token,
       user: {
         _id: user._id,
         fullName: user.fullName,
@@ -71,15 +99,14 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/profile', async (req: Request, res: Response) => {
+router.get('/profile', requireAuth, async (req: AuthRequest, res: Response) => {
   try {
-    const email = String(req.query.email ?? '').trim().toLowerCase();
-    if (!email) {
-      res.status(400).json({ message: 'email query parameter is required' });
+    if (!req.user?.userId) {
+      res.status(401).json({ message: 'Unauthorized' });
       return;
     }
 
-    const user = await User.findOne({ email }).select('-password');
+    const user = await User.findById(req.user.userId).select('-password');
     if (!user) {
       res.status(404).json({ message: 'User not found' });
       return;
@@ -89,6 +116,10 @@ router.get('/profile', async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Error fetching profile', error });
   }
+});
+
+router.post('/logout', (_req: Request, res: Response) => {
+  res.json({ message: 'Logout successful' });
 });
 
 export default router;

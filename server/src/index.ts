@@ -52,7 +52,7 @@ app.get('/', (_req: Request, res: Response) => {
       productById: '/api/products/:id',
       signup: '/api/auth/signup',
       login: '/api/auth/login',
-      profile: '/api/auth/profile?email=<email>',
+      profile: '/api/auth/profile (Authorization: Bearer <token>)',
     }
   });
 });

@@ -1,9 +1,15 @@
 {
-    "name": "Electron",
-    "version": "1.0.0",
-
-    "scripts": {
-        "dev-frontend": "cd client && npm run dev",
-        "dev-backend": "cd server && npm run start"
-    }
+  "name": "electron-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "E-commerce application with Next.js client and Express server",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "install-all": "npm install"
+  }
 }

@@ -37,25 +37,24 @@ export default function ProductCard({ p, onAddToCart }: ProductCardProps) {
   };
 
   return (
-    <Card className="relative flex flex-col items-center mx-auto w-full max-w-xs pt-0">
-      {/* placeholder image if none is provided */}
+    <Card className="relative mx-auto flex w-full max-w-xs flex-col overflow-hidden bg-white pt-0">
       <img
         src={p.images[0] || ""}
         alt={displayName}
-        className="relative rounded-t-xl aspect-video w-full object-cover brightness-90"
+        className="relative aspect-video w-full rounded-t-[28px] object-cover"
       />
-      <CardHeader className="justify-center w-full">{displayName}</CardHeader>
-      <CardDescription>₹{p.price}</CardDescription>
-      <CardFooter>
+      <CardHeader className="w-full justify-center pb-2">{displayName}</CardHeader>
+      <CardDescription className="px-6 text-black/55">₹{p.price}</CardDescription>
+      <CardFooter className="pt-4">
         {onAddToCart ? (
           <CardAction>
-            <Button onClick={handleAdd} className="w-full">
+            <Button onClick={handleAdd} className="w-full rounded-full bg-color2 px-5 text-white hover:bg-color1">
               Add to cart
             </Button>
           </CardAction>
         ) : (
           <CardAction>
-            <Button className="w-full">
+            <Button className="w-full rounded-full bg-color2 px-5 text-white hover:bg-color1">
               <Link href={`/product/${p._id}`}>View Product</Link>
             </Button>
           </CardAction>

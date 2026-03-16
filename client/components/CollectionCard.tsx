@@ -11,22 +11,19 @@ export type Collection = {
 export default function CollectionCard({ c }: { c: Collection }) {
   return (
     <Link href={`/collection/${encodeURIComponent(c.title)}`}>
-      <Card className="relative h-100 w-9/10 md:h-180 md:w-160 font-poppins p-4 md:p-6 mb-14 overflow-hidden">
-        <CardTitle className="font-bold text-xl md:text-3xl">
+      <Card className="relative h-[28rem] w-[20rem] md:h-[32rem] md:w-[34rem] font-poppins p-6 md:p-8 mb-8 overflow-hidden bg-white">
+        <CardTitle className="font-bold text-2xl md:text-4xl tracking-tight max-w-[60%]">
           {c.title}
         </CardTitle>
-        <CardDescription className="mb-4 text-md md:text-base md:mb-8">
+        <CardDescription className="mb-4 max-w-[52%] text-sm md:text-base leading-6 text-black/55">
           {c.description}
         </CardDescription>
-        <div className="absolute bottom-0 right-0 w-2/3 h-3/5 overflow-hidden">
+        <div className="absolute bottom-0 right-0 flex h-[68%] w-[68%] items-end justify-end overflow-hidden">
           <img
             src={c.image}
             alt={c.title}
-            className="w-[140%] h-[140%] object-cover object-top-left"
+            className="max-h-full max-w-full object-contain object-bottom-right"
           />
-          {/* <Button className='mt-8'>
-                    <Link href={`/collection/${c.title}`}>View {c.title}</Link>
-                </Button> */}
         </div>
       </Card>
     </Link>
@@ -35,13 +32,14 @@ export default function CollectionCard({ c }: { c: Collection }) {
 
 export function HeroCollectionCard({ c }: { c: Collection }) {
   return (
-    <div className="relative flex flex-col justify-start bg-white h-84 w-78 wmd:h-108 md:w-96 p-6 rounded-2xl overflow-hidden">
-      <div className="text-2xl font-poppins font-semibold">{c.title}</div>
-      <div className="absolute bottom-0 right-0 w-2/3 h-3/5 overflow-hidden">
+    <div className="relative flex h-[21rem] w-[18rem] flex-col justify-start overflow-hidden rounded-[28px] border border-black/10 bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] md:h-[24rem] md:w-[20rem]">
+      <div className="max-w-[60%] text-2xl font-poppins font-semibold tracking-tight">{c.title}</div>
+      <p className="mt-2 max-w-[58%] text-sm leading-6 text-black/50">{c.description}</p>
+      <div className="absolute bottom-0 right-0 flex h-[64%] w-[68%] items-end justify-end overflow-hidden">
         <img
           src={c.image}
           alt={c.title}
-          className="w-[120%] h-[120%] object-cover object-top-left"
+          className="max-h-full max-w-full object-contain object-bottom-right"
         />
       </div>
     </div>

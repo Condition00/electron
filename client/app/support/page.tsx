@@ -41,26 +41,27 @@ export default function SupportPage() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-around gap-20 min-h-screen bg-color5 pt-[15vh] font-inter">
+      <div className="flex min-h-screen flex-col items-center justify-around gap-16 bg-color5 px-6 pt-[12vh] pb-16 font-inter">
         {/* Channels */}
-        <div className="flex items-center justify-evenly min-w-[99vw] mt-4">
+        <div className="mt-4 grid w-full max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
           {channels.map(ch => (
-            <Card key={ch.title} className="flex flex-col items-center justify-around gap-2 p-8 bg-white   border-2 border-color1 rounded-lg">
-              <CardTitle className="text-2xl font-bold pt-4">{ch.title}</CardTitle>
-              <p className="text-sm">{ch.detail}</p>
-              <p className="text-sm font-light pb-4">{ch.sub}</p>
-              <a href={ch.href} className="bg-color3 text-white font-opensans text-md py-1 px-6  border-0 rounded-xl">{ch.cta}</a>
+            <Card key={ch.title} className="items-center gap-3 p-8 text-center bg-white">
+              <div className="text-2xl">{ch.icon}</div>
+              <CardTitle className="pt-1 text-2xl font-bold tracking-tight">{ch.title}</CardTitle>
+              <p className="text-sm text-black/75">{ch.detail}</p>
+              <p className="pb-4 text-sm font-light text-black/50">{ch.sub}</p>
+              <a href={ch.href} className="rounded-full bg-color2 px-5 py-2 text-sm text-white transition-colors hover:bg-color1">{ch.cta}</a>
             </Card>
           ))}
         </div>
 
         {/* FAQ */}
-        <section className="flex flex-col min-w-lg max-w-lg border-2 border-black rounded-xl p-4 bg-white">
+        <section className="flex w-full max-w-3xl flex-col rounded-[28px] border border-black/10 bg-white p-6 md:p-8">
           <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.3rem", marginBottom: "1.25rem" }}>Frequently Asked Questions</h2>
           <Accordion type="single"
             collapsible
             defaultValue="item-1"
-            className="max-w-lg">
+            className="w-full">
             {FAQS.map((faq) => (
               <AccordionItem key={faq.v} value={faq.v}>
                 <AccordionTrigger>{faq.q}</AccordionTrigger>
@@ -71,7 +72,7 @@ export default function SupportPage() {
         </section>
 
         {/* Contact form */}
-        <section id="contact" className="border-2 border-black p-4 rounded-xl bg-white">
+        <section id="contact" className="w-full max-w-3xl rounded-[28px] border border-black/10 bg-white p-6 md:p-8">
           <h2 className="text-2xl font-poppins font-bold">Send us a message</h2>
           <div className="card p-8">
             {sent ? (
@@ -109,11 +110,11 @@ export default function SupportPage() {
         </section>
 
         {/* Returns info */}
-        <div className="flex flex-col items-center justify-around max-w-lg bg-white border-2 border-black rounded-lg mb-10 p-4">
+        <div className="mb-10 flex w-full max-w-4xl flex-col items-center justify-around rounded-[28px] border border-black/10 bg-white p-6 md:p-8">
           <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.3rem", marginBottom: "1.25rem" }}>Returns & Warranty</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: "1.25rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: "1.25rem", width: "100%" }}>
             {[{ icon: "↩️", title: "7-Day Returns", body: "Return any product within 7 days of delivery. Must be unused, in original packaging with all accessories." }, { icon: "🔧", title: "Warranty Claims", body: "All products come with manufacturer warranty. Log your claim through Account → Orders → Warranty." }, { icon: "💰", title: "Refund Timeline", body: "Refunds processed in 3–5 working days after we receive and inspect the returned item." }, { icon: "🔄", title: "Exchanges", body: "Exchange requests can be made within 7 days. Subject to stock availability." }].map(info => (
-              <Card key={info.title} className="card" style={{ padding: "1.5rem" }}>
+              <Card key={info.title} className="bg-[#fcfcfb]" style={{ padding: "1.5rem" }}>
                 <CardTitle style={{ fontFamily: "var(--font-heading)", fontWeight: 800, margin: "0.6rem 0 0.3rem" }}>{info.title}</CardTitle>
                 <CardDescription style={{ color: "var(--text-muted)", fontSize: "0.87rem", lineHeight: 1.65 }}>{info.body}</CardDescription>
               </Card>

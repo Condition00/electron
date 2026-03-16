@@ -15,8 +15,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { API_BASE_URL } from "@/lib/api";
+import { setAuthToken } from "@/lib/auth";
 
 export default function Page() {
     const router = useRouter();
@@ -54,7 +55,11 @@ export default function Page() {
                 throw new Error(data?.message || "Signup failed");
             }
 
-            window.localStorage.setItem("electron_user_email", data.user.email);
+            if (!data?.token) {
+                throw new Error("Authentication token was not returned");
+            }
+
+            setAuthToken(data.token);
             router.push("/account");
             router.refresh();
         } catch (err) {
@@ -85,77 +90,77 @@ export default function Page() {
                                     <Label htmlFor="fullName" className="md:text-sm text-xs text-black mb-2">
                                         Full Name
                                     </Label>
-                                    <Input
-                                        id="fullName"
-                                        value={fullName}
-                                        onChange={(e) => setFullName(e.target.value)}
-                                        required
+                            <Input
+                                id="fullName"
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
+                                required
                                         placeholder="John Doe"
                                         className="bg-zinc-100 text-xs md:text-sm text-black"
-                                    />
+                            />
                                 </div>
 
                                 <div className="flex flex-col">
                                     <Label htmlFor="email" className="md:text-sm text-xs text-black mb-2">
                                         Email
                                     </Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
+                            <Input
+                                id="email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                                         placeholder="electron@gmail.com"
                                         className="bg-zinc-100 text-xs md:text-sm text-black"
-                                    />
+                            />
                                 </div>
 
                                 <div className="flex flex-col">
                                     <Label htmlFor="password" className="md:text-sm text-xs text-black mb-2">
                                         Password
                                     </Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                        minLength={8}
+                            <Input
+                                id="password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                minLength={8}
+                                required
                                         placeholder="********"
                                         className="bg-zinc-100 text-xs md:text-sm text-black"
-                                    />
+                            />
                                 </div>
 
                                 <div className="flex flex-col">
                                     <Label htmlFor="country" className="md:text-sm text-xs text-black mb-2">
                                         Country/Region
                                     </Label>
-                                    <Select value={country} onValueChange={setCountry}>
+                            <Select value={country} onValueChange={setCountry}>
                                         <SelectTrigger className="w-full bg-zinc-100 text-black text-xs md:text-sm">
-                                            <SelectValue placeholder="Select a country" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectLabel>Country</SelectLabel>
-                                                <SelectItem value="India">India</SelectItem>
-                                                <SelectItem value="USA">USA</SelectItem>
+                                    <SelectValue placeholder="Select a country" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Country</SelectLabel>
+                                        <SelectItem value="India">India</SelectItem>
+                                        <SelectItem value="USA">USA</SelectItem>
                                                 <SelectItem value="UK">UK</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
                                 </div>
 
                                 <div className="flex flex-col">
                                     <Label htmlFor="dob" className="md:text-sm text-xs text-black mb-2">
                                         Date of Birth
                                     </Label>
-                                    <Input
-                                        id="dob"
-                                        type="date"
-                                        value={dateOfBirth}
-                                        onChange={(e) => setDateOfBirth(e.target.value)}
+                            <Input
+                                id="dob"
+                                type="date"
+                                value={dateOfBirth}
+                                onChange={(e) => setDateOfBirth(e.target.value)}
                                         className="bg-zinc-100 text-xs md:text-sm text-black"
-                                    />
+                            />
                                 </div>
 
                                 <p className="text-xs text-zinc-500">You need your date of birth to reset your password.</p>
