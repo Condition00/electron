@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import {
     Field,
@@ -86,6 +87,9 @@ export default function Page() {
                         {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
                         <Field>
+                            <Link href="/signup">
+                                <FieldDescription>Create an account ?</FieldDescription>
+                            </Link>
                             <Button type="submit" disabled={loading}>
                                 {loading ? "Logging in..." : "Login"}
                             </Button>

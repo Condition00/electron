@@ -78,10 +78,12 @@ export default function AccountPage() {
                   Profile
                   <ChevronRight className="w-4 h-4" />
                 </button>
+                <a href="#Orders">
                 <button className="w-full text-left px-4 py-3 rounded-lg text-[#06141b] hover:bg-[#f3f4f6] transition flex items-center justify-between">
                   Orders
                   <ChevronRight className="w-4 h-4" />
                 </button>
+                </a>
                 <button className="w-full text-left px-4 py-3 rounded-lg text-[#06141b] hover:bg-[#f3f4f6] transition flex items-center justify-between">
                   <Settings className="w-4 h-4 mr-2 inline" />
                   Settings
@@ -146,6 +148,7 @@ export default function AccountPage() {
             </Card>
 
             {/* My Orders */}
+            <section id='Orders'></section>
             <Card className="border border-[#e5e7eb]">
               <CardHeader className="border-b border-[#e5e7eb]">
                 <CardTitle className="text-xl text-[#06141b] font-poppins">
