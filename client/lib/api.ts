@@ -35,3 +35,23 @@ export type ApiUserProfile = {
   address?: string[];
   createdAt: string;
 };
+
+export type ApiOrderItem = {
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+};
+
+export type ApiOrder = {
+  _id: string;
+  userId: string;
+  items: ApiOrderItem[];
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  status: 'placed' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+  createdAt: string;
+};

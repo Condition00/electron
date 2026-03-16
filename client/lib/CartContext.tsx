@@ -1,29 +1,25 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useMemo, useState, ReactNode, useEffect } from 'react';
+import type { ApiProduct } from '@/lib/api';
 
-interface Product {
-  id: number;
+interface CartProduct {
+  _id: string;
   name: string;
   price: number;
-  emoji: string;
-  badge?: string;
-  deal?: boolean;
-  originalPrice?: number;
-  category: string;
-  rating: number;
-  reviews: number;
+  image?: string;
 }
 
-interface CartItem extends Product {
-  qty: number;
+export interface CartItem extends CartProduct {
+  quantity: number;
 }
 
 interface CartContextType {
   cart: CartItem[];
-  addItem: (product: Product) => void;
-  removeFromCart: (id: number) => void;
-  changeQty: (id: number, delta: number) => void;
+  addItem: (product: ApiProduct, quantity?: number) => void;
+  removeFromCart: (id: string) => void;
+  changeQty: (id: string, delta: number) => void;
+  setQty: (id: string, quantity: number) => void;
   clearCart: () => void;
   total: number;
   count: number;
@@ -34,42 +30,85 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addItem = (product: Product) => {
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const raw = window.localStorage.getItem('electron_cart');
+    if (!raw) return;
+
+    try {
+      const parsed = JSON.parse(raw) as CartItem[];
+      if (Array.isArray(parsed)) {
+        setCart(parsed);
+      }
+    } catch {
+      setCart([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem('electron_cart', JSON.stringify(cart));
+  }, [cart]);
+
+  const addItem = (product: ApiProduct, quantity = 1) => {
     setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
+      const existing = prev.find(item => item._id === product._id);
       if (existing) {
         return prev.map(item =>
-          item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
         );
       }
-      return [...prev, { ...product, qty: 1 }];
+
+      return [
+        ...prev,
+        {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          image: product.images?.[0],
+          quantity,
+        },
+      ];
     });
   };
 
-  const removeFromCart = (id: number) => {
-    setCart(prev => prev.filter(item => item.id !== id));
+  const removeFromCart = (id: string) => {
+    setCart(prev => prev.filter(item => item._id !== id));
   };
 
-  const changeQty = (id: number, delta: number) => {
+  const changeQty = (id: string, delta: number) => {
     setCart(prev => prev.map(item => {
-      if (item.id === id) {
-        const newQty = item.qty + delta;
+      if (item._id === id) {
+        const newQty = item.quantity + delta;
         if (newQty <= 0) return null;
-        return { ...item, qty: newQty };
+        return { ...item, quantity: newQty };
       }
       return item;
     }).filter(Boolean) as CartItem[]);
+  };
+
+  const setQty = (id: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(id);
+      return;
+    }
+
+    setCart(prev => prev.map(item => (
+      item._id === id ? { ...item, quantity } : item
+    )));
   };
 
   const clearCart = () => {
     setCart([]);
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const count = cart.reduce((sum, item) => sum + item.qty, 0);
+  const total = useMemo(() => cart.reduce((sum, item) => sum + item.price * item.quantity, 0), [cart]);
+  const count = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart]);
 
   return (
-    <CartContext.Provider value={{ cart, addItem, removeFromCart, changeQty, clearCart, total, count }}>
+    <CartContext.Provider value={{ cart, addItem, removeFromCart, changeQty, setQty, clearCart, total, count }}>
       {children}
     </CartContext.Provider>
   );

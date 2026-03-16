@@ -6,12 +6,13 @@ import { ChevronRight, LogOut, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { API_BASE_URL, type ApiUserProfile } from '@/lib/api'
+import { API_BASE_URL, type ApiOrder, type ApiUserProfile } from '@/lib/api'
 import { authorizedFetch, getAuthToken, logout } from '@/lib/auth'
 
 export default function AccountPage() {
   const router = useRouter()
   const [profile, setProfile] = useState<ApiUserProfile | null>(null)
+  const [orders, setOrders] = useState<ApiOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -44,6 +45,15 @@ export default function AccountPage() {
 
         const data = await res.json()
         setProfile(data as ApiUserProfile)
+
+        const ordersRes = await authorizedFetch(`${API_BASE_URL}/api/orders/mine`, {
+          cache: 'no-store',
+        })
+
+        if (ordersRes.ok) {
+          const ordersData = await ordersRes.json()
+          setOrders(Array.isArray(ordersData) ? (ordersData as ApiOrder[]) : [])
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unexpected error')
       } finally {
@@ -61,6 +71,14 @@ export default function AccountPage() {
 
     return new Date(profile.createdAt).toLocaleDateString()
   }, [profile])
+
+  const formatOrderStatus = (status: ApiOrder['status']): string => {
+    if (status === 'placed') return 'Placed'
+    if (status === 'paid') return 'Paid'
+    if (status === 'shipped') return 'Shipped'
+    if (status === 'delivered') return 'Delivered'
+    return 'Cancelled'
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -165,62 +183,26 @@ export default function AccountPage() {
               </CardHeader>
               <CardContent className="p-6">
                 <div className="space-y-4">
-                  {/* Order Item */}
-                  <div className="border border-[#e5e7eb] rounded-lg p-4 hover:shadow-md transition">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="flex-1">
-                        <p className="font-medium text-[#06141b]">Order #12345</p>
-                        <p className="text-sm text-[#9ba8ab]">March 10, 2024</p>
-                        <p className="text-sm text-[#4a5c6a] mt-1">3 items • Total: $89.97</p>
+                  {orders.length === 0 ? (
+                    <p className="text-[#4a5c6a]">No orders yet.</p>
+                  ) : (
+                    orders.map((order) => (
+                      <div key={order._id} className="border border-[#e5e7eb] rounded-lg p-4 hover:shadow-md transition">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                          <div className="flex-1">
+                            <p className="font-medium text-[#06141b]">Order #{order._id.slice(-6).toUpperCase()}</p>
+                            <p className="text-sm text-[#9ba8ab]">{new Date(order.createdAt).toLocaleDateString()}</p>
+                            <p className="text-sm text-[#4a5c6a] mt-1">{order.items.length} items • Total: ${order.total.toFixed(2)}</p>
+                          </div>
+                          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                            <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium w-fit">
+                              {formatOrderStatus(order.status)}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-                        <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium w-fit">
-                          Delivered
-                        </span>
-                        <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Order Item */}
-                  <div className="border border-[#e5e7eb] rounded-lg p-4 hover:shadow-md transition">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="flex-1">
-                        <p className="font-medium text-[#06141b]">Order #12344</p>
-                        <p className="text-sm text-[#9ba8ab]">March 5, 2024</p>
-                        <p className="text-sm text-[#4a5c6a] mt-1">2 items • Total: $54.98</p>
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-                        <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium w-fit">
-                          Shipped
-                        </span>
-                        <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Order Item */}
-                  <div className="border border-[#e5e7eb] rounded-lg p-4 hover:shadow-md transition">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="flex-1">
-                        <p className="font-medium text-[#06141b]">Order #12343</p>
-                        <p className="text-sm text-[#9ba8ab]">February 28, 2024</p>
-                        <p className="text-sm text-[#4a5c6a] mt-1">5 items • Total: $124.50</p>
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-                        <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium w-fit">
-                          Delivered
-                        </span>
-                        <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>

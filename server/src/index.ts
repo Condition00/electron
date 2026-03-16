@@ -6,6 +6,7 @@ import path from 'path';
 import collectionsRouter from './routes/collections';
 import productsRouter from './routes/products';
 import authRouter from './routes/auth';
+import ordersRouter from './routes/orders';
 
 const app = express();
 const rawMongoDbUri = process.env.MONGODB_URI ?? process.env.FULL_MONGOURI;
@@ -50,6 +51,8 @@ app.get('/', (_req: Request, res: Response) => {
       productCategories: '/api/products/categories',
       productsByCategory: '/api/products/category/:category',
       productById: '/api/products/:id',
+      orders: '/api/orders',
+      myOrders: '/api/orders/mine',
       signup: '/api/auth/signup',
       login: '/api/auth/login',
       profile: '/api/auth/profile (Authorization: Bearer <token>)',
@@ -60,6 +63,7 @@ app.get('/', (_req: Request, res: Response) => {
 app.use('/api/collections', collectionsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/orders', ordersRouter);
 
 // Connect to MongoDB and start server
 mongoose.connect(mongoDBURL || "")

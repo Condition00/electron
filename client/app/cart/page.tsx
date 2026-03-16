@@ -1,58 +1,80 @@
 'use client'
 
-import Navbar from '@/components/navbar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Trash2, Plus, Minus } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
-
-interface CartItem {
-  id: number
-  name: string
-  price: number
-  quantity: number
-  image: string
-}
+import { API_BASE_URL } from '@/lib/api'
+import { useCart } from '@/lib/CartContext'
+import { authorizedFetch, getAuthToken } from '@/lib/auth'
+import { useRouter } from 'next/navigation'
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: 'Premium Wireless Headphones',
-      price: 79.99,
-      quantity: 1,
-      image: '/placeholder.svg?height=200&width=200',
-    },
-    {
-      id: 2,
-      name: 'Elegant Watch',
-      price: 149.99,
-      quantity: 1,
-      image: '/placeholder.svg?height=200&width=200',
-    },
-  ])
+  const router = useRouter()
+  const { cart, setQty, removeFromCart, clearCart } = useCart()
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
-  const updateQuantity = (id: number, newQuantity: number) => {
+  const updateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity < 1) {
-      removeItem(id)
+      removeFromCart(id)
       return
     }
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    )
+    setQty(id, newQuantity)
   }
 
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id))
-  }
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const subtotal = useMemo(
+    () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [cart]
+  )
   const shipping = subtotal > 100 ? 0 : 9.99
   const tax = subtotal * 0.08
   const total = subtotal + shipping + tax
+
+  const handleCheckout = async () => {
+    setCheckoutError(null)
+
+    if (!getAuthToken()) {
+      router.push('/login')
+      return
+    }
+
+    if (cart.length === 0) {
+      return
+    }
+
+    try {
+      setCheckoutLoading(true)
+
+      const res = await authorizedFetch(`${API_BASE_URL}/api/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: cart.map((item) => ({
+            productId: item._id,
+            quantity: item.quantity,
+          })),
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data?.message || 'Checkout failed')
+      }
+
+      clearCart()
+      router.push('/account#Orders')
+      router.refresh()
+    } catch (err) {
+      setCheckoutError(err instanceof Error ? err.message : 'Checkout failed')
+    } finally {
+      setCheckoutLoading(false)
+    }
+  }
 
   return (
     <div className='flex min-h-screen bg-color4'>
@@ -65,21 +87,21 @@ export default function CartPage() {
             Shopping Cart
           </h1>
           <p className="text-[#4a5c6a]">
-            {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart
+            {cart.length} {cart.length === 1 ? 'item' : 'items'} in your cart
           </p>
         </div>
 
-        {cartItems.length > 0 ? (
+        {cart.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
               <Card className="border border-[#e5e7eb]">
                 <CardContent className="p-0">
-                  {cartItems.map((item, index) => (
+                  {cart.map((item, index) => (
                     <div
-                      key={item.id}
+                      key={item._id}
                       className={`p-6 flex flex-col sm:flex-row gap-6 ${
-                        index !== cartItems.length - 1
+                        index !== cart.length - 1
                           ? 'border-b border-[#e5e7eb]'
                           : ''
                       }`}
@@ -87,7 +109,7 @@ export default function CartPage() {
                       {/* Product Image */}
                       <div className="sm:w-32 flex-shrink-0">
                         <img
-                          src={item.image}
+                          src={item.image || '/placeholder.svg?height=200&width=200'}
                           alt={item.name}
                           className="w-full h-32 object-cover rounded-lg bg-[#f3f4f6]"
                         />
@@ -105,7 +127,7 @@ export default function CartPage() {
                         {/* Quantity Controls */}
                         <div className="flex items-center gap-2 w-fit">
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() => updateQuantity(item._id, item.quantity - 1)}
                             className="p-2 border border-[#e5e7eb] rounded-lg hover:bg-[#f3f4f6] transition"
                           >
                             <Minus className="w-4 h-4 text-[#06141b]" />
@@ -114,11 +136,11 @@ export default function CartPage() {
                             type="number"
                             min="1"
                             value={item.quantity}
-                            onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
+                            onChange={(e) => updateQuantity(item._id, parseInt(e.target.value) || 1)}
                             className="w-12 text-center border border-[#e5e7eb] rounded-lg py-2 text-[#06141b] focus:outline-none focus:ring-2 focus:ring-[#06141b]"
                           />
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() => updateQuantity(item._id, item.quantity + 1)}
                             className="p-2 border border-[#e5e7eb] rounded-lg hover:bg-[#f3f4f6] transition"
                           >
                             <Plus className="w-4 h-4 text-[#06141b]" />
@@ -132,7 +154,7 @@ export default function CartPage() {
                           ${(item.price * item.quantity).toFixed(2)}
                         </p>
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeFromCart(item._id)}
                           className="p-2 text-destructive hover:bg-red-50 rounded-lg transition"
                         >
                           <Trash2 className="w-5 h-5" />
@@ -145,7 +167,7 @@ export default function CartPage() {
 
               {/* Continue Shopping */}
               <div className="mt-6">
-                <Link href="/search">
+                <Link href="/collection/all">
                   <Button
                     variant="outline"
                     className="w-full border-[#06141b] text-[#06141b] hover:bg-[#f3f4f6]"
@@ -209,9 +231,17 @@ export default function CartPage() {
                     </div>
                   )}
 
+                  {checkoutError ? (
+                    <p className="text-sm text-red-600">{checkoutError}</p>
+                  ) : null}
+
                   {/* Checkout Button */}
-                  <Button className="w-full bg-color2 hover:bg-color5 text-white transition-all ease-in-out duration-300 hover:text-black h-12 text-base font-medium mt-4">
-                    Proceed to Checkout
+                  <Button
+                    onClick={handleCheckout}
+                    disabled={checkoutLoading}
+                    className="w-full bg-color2 hover:bg-color5 text-white transition-all ease-in-out duration-300 hover:text-black h-12 text-base font-medium mt-4"
+                  >
+                    {checkoutLoading ? 'Placing order...' : 'Proceed to Checkout'}
                   </Button>
 
                   {/* Payment Methods */}
@@ -242,7 +272,7 @@ export default function CartPage() {
           <Card className="border border-[#e5e7eb]">
             <CardContent className="p-12 text-center">
               <p className="text-[#9ba8ab] text-lg mb-6">Your cart is empty</p>
-              <Link href="/search">
+              <Link href="/collection/all">
                 <Button className="bg-[#06141b] hover:bg-[#11212d] text-white">
                   Start Shopping
                 </Button>
