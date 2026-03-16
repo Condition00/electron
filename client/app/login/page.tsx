@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import {
@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_BASE_URL } from "@/lib/api";
-import { setAuthToken } from "@/lib/auth";
+import { getAuthToken, setAuthToken } from "@/lib/auth";
 
 export default function Page() {
     const router = useRouter();
@@ -21,6 +21,12 @@ export default function Page() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (getAuthToken()) {
+            router.replace('/account');
+        }
+    }, [router]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

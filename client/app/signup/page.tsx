@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { API_BASE_URL } from "@/lib/api";
-import { setAuthToken } from "@/lib/auth";
+import { getAuthToken, setAuthToken } from "@/lib/auth";
 
 export default function Page() {
     const router = useRouter();
@@ -28,6 +28,12 @@ export default function Page() {
     const [dateOfBirth, setDateOfBirth] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (getAuthToken()) {
+            router.replace('/account');
+        }
+    }, [router]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

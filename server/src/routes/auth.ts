@@ -118,6 +118,80 @@ router.get('/profile', requireAuth, async (req: AuthRequest, res: Response) => {
   }
 });
 
+router.post('/addresses', requireAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user?.userId) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const rawAddress = String(req.body?.address ?? '').trim();
+
+    if (!rawAddress) {
+      res.status(400).json({ message: 'address is required' });
+      return;
+    }
+
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    const alreadyExists = user.address.some((addr) => addr.toLowerCase() === rawAddress.toLowerCase());
+    if (alreadyExists) {
+      res.status(409).json({ message: 'Address already exists' });
+      return;
+    }
+
+    user.address.push(rawAddress);
+    await user.save();
+
+    res.status(201).json({
+      message: 'Address added successfully',
+      address: user.address,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding address', error });
+  }
+});
+
+router.delete('/addresses/:index', requireAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user?.userId) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const index = Number(req.params.index);
+    if (!Number.isInteger(index)) {
+      res.status(400).json({ message: 'Invalid address index' });
+      return;
+    }
+
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    if (index < 0 || index >= user.address.length) {
+      res.status(404).json({ message: 'Address not found' });
+      return;
+    }
+
+    user.address.splice(index, 1);
+    await user.save();
+
+    res.json({
+      message: 'Address removed successfully',
+      address: user.address,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error removing address', error });
+  }
+});
+
 router.post('/logout', (_req: Request, res: Response) => {
   res.json({ message: 'Logout successful' });
 });

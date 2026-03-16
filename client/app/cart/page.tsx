@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Trash2, Plus, Minus } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { API_BASE_URL } from '@/lib/api'
 import { useCart } from '@/lib/CartContext'
@@ -13,8 +13,18 @@ import { useRouter } from 'next/navigation'
 export default function CartPage() {
   const router = useRouter()
   const { cart, setQty, removeFromCart, clearCart } = useCart()
+  const [authChecked, setAuthChecked] = useState(false)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const token = getAuthToken()
+    if (!token) {
+      router.replace('/login')
+      return
+    }
+    setAuthChecked(true)
+  }, [router])
 
   const updateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity < 1) {
@@ -74,6 +84,10 @@ export default function CartPage() {
     } finally {
       setCheckoutLoading(false)
     }
+  }
+
+  if (!authChecked) {
+    return null
   }
 
   return (

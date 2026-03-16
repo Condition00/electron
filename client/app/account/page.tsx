@@ -13,6 +13,10 @@ export default function AccountPage() {
   const router = useRouter()
   const [profile, setProfile] = useState<ApiUserProfile | null>(null)
   const [orders, setOrders] = useState<ApiOrder[]>([])
+  const [newAddress, setNewAddress] = useState('')
+  const [showAddressForm, setShowAddressForm] = useState(false)
+  const [addressSaving, setAddressSaving] = useState(false)
+  const [addressError, setAddressError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -86,6 +90,64 @@ export default function AccountPage() {
     await logout()
     router.push('/login')
     router.refresh()
+  }
+
+  const handleAddAddress = async () => {
+    const value = newAddress.trim()
+
+    if (!value) {
+      setAddressError('Please enter a valid address')
+      return
+    }
+
+    try {
+      setAddressSaving(true)
+      setAddressError(null)
+
+      const res = await authorizedFetch(`${API_BASE_URL}/api/auth/addresses`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ address: value }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data?.message || 'Failed to add address')
+      }
+
+      setProfile((prev) => (prev ? { ...prev, address: data.address } : prev))
+      setNewAddress('')
+      setShowAddressForm(false)
+    } catch (err) {
+      setAddressError(err instanceof Error ? err.message : 'Failed to add address')
+    } finally {
+      setAddressSaving(false)
+    }
+  }
+
+  const handleRemoveAddress = async (index: number) => {
+    try {
+      setAddressSaving(true)
+      setAddressError(null)
+
+      const res = await authorizedFetch(`${API_BASE_URL}/api/auth/addresses/${index}`, {
+        method: 'DELETE',
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data?.message || 'Failed to remove address')
+      }
+
+      setProfile((prev) => (prev ? { ...prev, address: data.address } : prev))
+    } catch (err) {
+      setAddressError(err instanceof Error ? err.message : 'Failed to remove address')
+    } finally {
+      setAddressSaving(false)
+    }
   }
 
   return (
@@ -216,20 +278,61 @@ export default function AccountPage() {
                   <CardTitle className="text-xl text-[#06141b] font-poppins">
                     Saved Addresses
                   </CardTitle>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" onClick={() => setShowAddressForm((v) => !v)}>
                     Add New
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="p-6">
-                <div className="border border-[#e5e7eb] rounded-lg p-4">
-                  <p className="font-medium text-[#06141b] mb-2">Home</p>
-                  <p className="text-sm text-[#4a5c6a]">
-                    123 Main Street<br />
-                    New York, NY 10001<br />
-                    United States
-                  </p>
-                </div>
+              <CardContent className="p-6 space-y-4">
+                {showAddressForm ? (
+                  <div className="space-y-3 border border-[#e5e7eb] rounded-lg p-4">
+                    <textarea
+                      value={newAddress}
+                      onChange={(e) => setNewAddress(e.target.value)}
+                      rows={3}
+                      placeholder="Enter full address"
+                      className="w-full rounded-lg border border-[#e5e7eb] p-3 text-sm text-[#06141b]"
+                    />
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={handleAddAddress} disabled={addressSaving}>
+                        {addressSaving ? 'Saving...' : 'Save Address'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setShowAddressForm(false)
+                          setNewAddress('')
+                          setAddressError(null)
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : null}
+
+                {addressError ? <p className="text-sm text-red-600">{addressError}</p> : null}
+
+                {profile?.address && profile.address.length > 0 ? (
+                  profile.address.map((addr, index) => (
+                    <div key={`${addr}-${index}`} className="border border-[#e5e7eb] rounded-lg p-4">
+                      <p className="text-sm text-[#4a5c6a] whitespace-pre-line">{addr}</p>
+                      <div className="mt-3">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleRemoveAddress(index)}
+                          disabled={addressSaving}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-[#4a5c6a]">No saved addresses yet.</p>
+                )}
               </CardContent>
             </Card>
           </div>
