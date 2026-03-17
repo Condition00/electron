@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
 import { getAuthToken, setAuthToken } from "@/lib/auth";
 
@@ -21,6 +22,7 @@ export default function Page() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         if (getAuthToken()) {
@@ -84,14 +86,26 @@ export default function Page() {
                         </Field>
                         <Field>
                             <FieldLabel htmlFor="password">Password</FieldLabel>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="*******"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="*******"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    className="pr-10"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                    className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-800"
+                                    tabIndex={-1}
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
                             <FieldDescription>Enter your password</FieldDescription>
                         </Field>
 
