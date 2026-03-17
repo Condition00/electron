@@ -28,7 +28,7 @@ function Navbar() {
 
   return (
     <div className="sticky flex min-w-screen items-center justify-center z-100 text-black">
-      <NavigationMenu className="fixed left-10 top-2 z-5 flex items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
+      <NavigationMenu className="absolute w-full md:w-fit md:left-10 top-2 z-5 flex items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
         <NavigationMenuList className="relative flex gap-3">
           <NavigationMenuItem>
             <NavigationMenuLink href="/">Home</NavigationMenuLink>
@@ -44,10 +44,10 @@ function Navbar() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <div className="fixed top-2 left-1/2 -translate-x-1/2 z-5 w-72 md:w-96">
+      <div className="hidden md:flex md:absolute top-2 left-1/2 -translate-x-1/2 z-5 w-72 md:w-96">
         <SearchBar />
       </div>
-      <NavigationMenu className="fixed right-10 top-2 z-5 flex items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
+      <NavigationMenu className="absolute right-10 top-2 z-5 md:flex hidden items-center min-w-fit bg-white border-0 rounded-xl px-4 py-1 font-opensans font-light">
         <NavigationMenuList className="relative flex gap-3">
           <NavigationMenuItem>
             <NavigationMenuLink href={profileHref}>

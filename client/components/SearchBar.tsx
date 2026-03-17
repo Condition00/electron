@@ -64,7 +64,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    <div ref={containerRef} className="md:flex relative w-full hidden">
       <form
         onSubmit={handleSubmit}
         className="flex items-center bg-white rounded-xl overflow-visible border border-gray-200 focus-within:border-color2 transition-colors shadow-sm"
