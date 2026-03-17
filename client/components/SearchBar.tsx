@@ -80,7 +80,7 @@ export default function SearchBar() {
             if (suggestions.length > 0) setShowDropdown(true);
           }}
           placeholder="Search products..."
-          className="flex-1 bg-transparent px-2 py-3 text-sm outline-none font-opensans text-color1 placeholder:text-gray-400"
+          className="flex-1 bg-transparent px-6 py-3 text-sm outline-none font-opensans text-color1 placeholder:text-gray-400"
         />
         <button
           type="submit"

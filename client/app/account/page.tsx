@@ -174,11 +174,11 @@ export default function AccountPage() {
                   Orders
                 </button>
                 </a>
-                <button className="w-full text-left px-4 py-3 rounded-lg text-black hover:bg-[#f3f4f6] transition flex items-center justify-between">
+                {/* <button className="w-full text-left px-4 py-3 rounded-lg text-black hover:bg-[#f3f4f6] transition flex items-center justify-between">
                   <Settings className="w-4 h-4 mr-2 inline" />
                   Settings
                   <div></div>
-                </button>
+                </button> */}
                 <button onClick={handleLogout} className="w-full text-left px-4 py-3 rounded-lg text-destructive hover:bg-red-50 transition flex items-center justify-between mt-4 border-t border-[#e5e7eb] pt-4">
                   <span className="inline-flex w-full items-center justify-between cursor-pointer">
                     <span>
