@@ -91,211 +91,196 @@ export default function CartPage() {
   }
 
   return (
-    <div className='flex min-h-screen bg-color4'>
-    <div className="min-h-screen bg-color5 rounded-2xl m-20 w-full ">
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#06141b] font-poppins mb-2">
-            Shopping Cart
+    <div className="min-h-screen bg-color4 px-4 pb-6 pt-20 md:px-8 md:pb-8 md:pt-24 lg:px-12 lg:pt-28">
+      <main className="mx-auto max-w-7xl rounded-3xl bg-white shadow-sm ring-1 ring-black/5 overflow-hidden">
+        <div className="bg-color3 px-6 py-6 md:px-8 md:py-7">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white font-poppins">
+            CHECK OUT
           </h1>
-          <p className="text-[#4a5c6a]">
-            {cart.length} {cart.length === 1 ? 'item' : 'items'} in your cart
-          </p>
         </div>
 
-        {cart.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
-            <div className="lg:col-span-2">
-              <Card className="border border-[#e5e7eb]">
-                <CardContent className="p-0">
-                  {cart.map((item, index) => (
-                    <div
-                      key={item._id}
-                      className={`p-6 flex flex-col sm:flex-row gap-6 ${
-                        index !== cart.length - 1
-                          ? 'border-b border-[#e5e7eb]'
-                          : ''
-                      }`}
-                    >
-                      {/* Product Image */}
-                      <div className="sm:w-32 flex-shrink-0">
-                        <img
-                          src={item.image || '/placeholder.svg?height=200&width=200'}
-                          alt={item.name}
-                          className="w-full h-32 object-cover rounded-lg bg-[#f3f4f6]"
-                        />
-                      </div>
+        <div className="grid gap-0 lg:grid-cols-[1.4fr_0.9fr]">
+          <section className="px-6 py-6 md:px-8 md:py-8 lg:border-r lg:border-black/5">
+            <div className="mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-color1 font-poppins">
+                Shopping Cart
+              </h2>
+              <p className="mt-1 text-sm text-color4">
+                {cart.length} {cart.length === 1 ? 'item' : 'items'} in your cart
+              </p>
+            </div>
 
-                      {/* Product Details */}
-                      <div className="flex-1">
-                        <h3 className="text-lg font-medium text-[#06141b] mb-2">
-                          {item.name}
-                        </h3>
-                        <p className="text-2xl font-bold text-[#06141b] mb-4">
-                          ${item.price.toFixed(2)}
-                        </p>
+            {cart.length > 0 ? (
+              <>
+                <div className="rounded-2xl border border-black/10">
+                  <div className="grid grid-cols-[1fr_auto_auto] gap-4 border-b border-black/10 px-4 py-3 text-sm font-medium text-color4 md:px-5">
+                    <span>Product</span>
+                    <span>Quantity</span>
+                    <span className="text-right">Total</span>
+                  </div>
 
-                        {/* Quantity Controls */}
-                        <div className="flex items-center gap-2 w-fit">
+                  <div>
+                    {cart.map((item, index) => (
+                      <div
+                        key={item._id}
+                        className={`grid grid-cols-1 gap-4 px-4 py-5 md:px-5 lg:grid-cols-[1fr_auto_auto] lg:items-center ${
+                          index !== cart.length - 1 ? 'border-b border-black/10' : ''
+                        }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-color6/40">
+                            <img
+                              src={item.image || '/placeholder.svg?height=200&width=200'}
+                              alt={item.name}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="truncate text-base md:text-lg font-medium text-color1">
+                              {item.name}
+                            </h3>
+                            <p className="mt-1 text-sm text-color4">
+                              ${item.price.toFixed(2)} each
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
                           <button
                             onClick={() => updateQuantity(item._id, item.quantity - 1)}
-                            className="p-2 border border-[#e5e7eb] rounded-lg hover:bg-[#f3f4f6] transition"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-black/10 text-color1 transition hover:bg-color6/30"
+                            aria-label={`Decrease quantity for ${item.name}`}
                           >
-                            <Minus className="w-4 h-4 text-[#06141b]" />
+                            <Minus className="h-4 w-4" />
                           </button>
                           <input
                             type="number"
                             min="1"
                             value={item.quantity}
                             onChange={(e) => updateQuantity(item._id, parseInt(e.target.value) || 1)}
-                            className="w-12 text-center border border-[#e5e7eb] rounded-lg py-2 text-[#06141b] focus:outline-none focus:ring-2 focus:ring-[#06141b]"
+                            className="h-9 w-14 rounded-md border border-black/10 text-center text-sm text-color1 focus:outline-none focus:ring-2 focus:ring-color1/20"
                           />
                           <button
                             onClick={() => updateQuantity(item._id, item.quantity + 1)}
-                            className="p-2 border border-[#e5e7eb] rounded-lg hover:bg-[#f3f4f6] transition"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-black/10 text-color1 transition hover:bg-color6/30"
+                            aria-label={`Increase quantity for ${item.name}`}
                           >
-                            <Plus className="w-4 h-4 text-[#06141b]" />
+                            <Plus className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-3 lg:justify-end">
+                          <p className="text-lg font-bold text-color1">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </p>
+                          <button
+                            onClick={() => removeFromCart(item._id)}
+                            className="rounded-md p-2 text-red-500 transition hover:bg-red-50"
+                            aria-label={`Remove ${item.name}`}
+                          >
+                            <Trash2 className="h-5 w-5" />
                           </button>
                         </div>
                       </div>
+                    ))}
+                  </div>
+                </div>
 
-                      {/* Item Total and Remove */}
-                      <div className="flex flex-col items-end justify-between">
-                        <p className="text-xl font-bold text-[#06141b]">
-                          ${(item.price * item.quantity).toFixed(2)}
-                        </p>
-                        <button
-                          onClick={() => removeFromCart(item._id)}
-                          className="p-2 text-destructive hover:bg-red-50 rounded-lg transition"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                <div className="mt-6">
+                  <Link href="/collection/all">
+                    <Button
+                      variant="outline"
+                      className="h-12 w-full border-color1 text-color1 hover:bg-color6/40"
+                    >
+                      Continue Shopping
+                    </Button>
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <Card className="border border-black/10">
+                <CardContent className="p-12 text-center">
+                  <p className="text-color4 text-lg mb-6">Your cart is empty</p>
+                  <Link href="/collection/all">
+                    <Button className="bg-color1 hover:bg-color2 text-white">
+                      Start Shopping
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
+            )}
+          </section>
 
-              {/* Continue Shopping */}
-              <div className="mt-6">
-                <Link href="/collection/all">
-                  <Button
-                    variant="outline"
-                    className="w-full border-[#06141b] text-[#06141b] hover:bg-[#f3f4f6]"
-                  >
-                    Continue Shopping
-                  </Button>
-                </Link>
-              </div>
-            </div>
+          <aside className="px-6 py-6 md:px-8 md:py-8 bg-color6/20 lg:sticky lg:top-6 lg:self-start">
+            <Card className="border border-black/10 bg-white shadow-none">
+              <CardHeader className="border-b border-black/10 px-6 py-5">
+                <CardTitle className="text-xl text-color1 font-poppins">
+                  Order Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 p-6">
+                <div className="flex items-center justify-between text-sm">
+                  <p className="text-color4">Subtotal</p>
+                  <p className="font-medium text-color1">${subtotal.toFixed(2)}</p>
+                </div>
 
-            {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <Card className="border border-[#e5e7eb] sticky top-20">
-                <CardHeader className="border-b border-[#e5e7eb]">
-                  <CardTitle className="text-xl text-[#06141b] font-poppins">
-                    Order Summary
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 space-y-4">
-                  {/* Subtotal */}
-                  <div className="flex justify-between items-center">
-                    <p className="text-[#4a5c6a]">Subtotal</p>
-                    <p className="font-medium text-[#06141b]">
-                      ${subtotal.toFixed(2)}
-                    </p>
+                <div className="flex items-center justify-between text-sm">
+                  <p className="text-color4">
+                    Shipping {shipping === 0 && <span className="ml-1 text-xs text-green-600">(Free)</span>}
+                  </p>
+                  <p className="font-medium text-color1">${shipping.toFixed(2)}</p>
+                </div>
+
+                <div className="border-t border-black/10 pt-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <p className="text-color4">Tax (estimated)</p>
+                    <p className="font-medium text-color1">${tax.toFixed(2)}</p>
                   </div>
+                </div>
 
-                  {/* Shipping */}
-                  <div className="flex justify-between items-center">
-                    <p className="text-[#4a5c6a]">
-                      Shipping {shipping === 0 && <span className="text-xs text-green-600 ml-1">(Free)</span>}
-                    </p>
-                    <p className="font-medium text-[#06141b]">
-                      ${shipping.toFixed(2)}
-                    </p>
+                <div className="border-t border-black/10 pt-4 flex items-center justify-between">
+                  <p className="text-lg font-bold text-color1">Total</p>
+                  <p className="text-2xl font-bold text-color1">${total.toFixed(2)}</p>
+                </div>
+
+                {subtotal <= 100 && (
+                  <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                    Free shipping on orders over $100!
                   </div>
+                )}
 
-                  {/* Divider */}
-                  <div className="border-t border-[#e5e7eb]" />
+                {checkoutError ? (
+                  <p className="text-sm text-red-600">{checkoutError}</p>
+                ) : null}
 
-                  {/* Tax */}
-                  <div className="flex justify-between items-center">
-                    <p className="text-[#4a5c6a]">Tax (estimated)</p>
-                    <p className="font-medium text-[#06141b]">
-                      ${tax.toFixed(2)}
-                    </p>
-                  </div>
-
-                  {/* Total */}
-                  <div className="border-t border-[#e5e7eb] pt-4 flex justify-between items-center">
-                    <p className="text-lg font-bold text-[#06141b]">Total</p>
-                    <p className="text-2xl font-bold text-[#06141b]">
-                      ${total.toFixed(2)}
-                    </p>
-                  </div>
-
-                  {/* Info */}
-                  {subtotal <= 100 && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
-                      Free shipping on orders over $100!
-                    </div>
-                  )}
-
-                  {checkoutError ? (
-                    <p className="text-sm text-red-600">{checkoutError}</p>
-                  ) : null}
-
-                  {/* Checkout Button */}
-                  <Button
-                    onClick={handleCheckout}
-                    disabled={checkoutLoading}
-                    className="w-full bg-color2 hover:bg-color5 text-white transition-all ease-in-out duration-300 hover:text-black h-12 text-base font-medium mt-4"
-                  >
-                    {checkoutLoading ? 'Placing order...' : 'Proceed to Checkout'}
-                  </Button>
-
-                  {/* Payment Methods */}
-                  <div className="space-y-2 pt-4 border-t border-[#e5e7eb]">
-                    <p className="text-xs text-[#9ba8ab] text-center mb-3">
-                      Secure checkout powered by Stripe
-                    </p>
-                    <div className="flex justify-center gap-2">
-                      <div className="w-12 h-8 bg-[#f3f4f6] rounded flex items-center justify-center text-xs text-[#9ba8ab]">
-                        Visa
-                      </div>
-                      <div className="w-12 h-8 bg-[#f3f4f6] rounded flex items-center justify-center text-xs text-[#9ba8ab]">
-                        MC
-                      </div>
-                      <div className="w-12 h-8 bg-[#f3f4f6] rounded flex items-center justify-center text-xs text-[#9ba8ab]">
-                        Amex
-                      </div>
-                      <div className="w-12 h-8 bg-[#f3f4f6] rounded flex items-center justify-center text-xs text-[#9ba8ab]">
-                        PayPal
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        ) : (
-          <Card className="border border-[#e5e7eb]">
-            <CardContent className="p-12 text-center">
-              <p className="text-[#9ba8ab] text-lg mb-6">Your cart is empty</p>
-              <Link href="/collection/all">
-                <Button className="bg-[#06141b] hover:bg-[#11212d] text-white">
-                  Start Shopping
+                <Button
+                  onClick={handleCheckout}
+                  disabled={checkoutLoading}
+                  className="h-12 w-full bg-color3 text-white hover:bg-color2"
+                >
+                  {checkoutLoading ? 'Placing order...' : 'Proceed to Checkout'}
                 </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        )}
+
+                <div className="pt-4">
+                  <p className="mb-3 text-center text-xs text-color5">
+                    Secure checkout powered by Stripe
+                  </p>
+                  <div className="flex justify-center gap-2">
+                    {['Visa', 'MC', 'Amex', 'PayPal'].map((label) => (
+                      <div
+                        key={label}
+                        className="flex h-8 w-12 items-center justify-center rounded bg-color6/60 text-[10px] text-color5"
+                      >
+                        {label}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </aside>
+        </div>
       </main>
-    </div>
     </div>
   )
 }

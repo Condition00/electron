@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
     Field,
     FieldDescription,
@@ -18,11 +19,13 @@ import { getAuthToken, setAuthToken } from "@/lib/auth";
 
 export default function Page() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
+    const created = searchParams.get("created") === "1";
 
     useEffect(() => {
         if (getAuthToken()) {
@@ -112,6 +115,11 @@ export default function Page() {
                         {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
                         <Field>
+                            {created ? (
+                                <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2">
+                                    Account created successfully. Please log in.
+                                </p>
+                            ) : null}
                             <Link href="/signup">
                                 <FieldDescription>Create an account ?</FieldDescription>
                             </Link>
